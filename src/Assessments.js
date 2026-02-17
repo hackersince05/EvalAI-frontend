@@ -1,54 +1,23 @@
 import React from 'react';
-import './Dashboard.css';
+import './Assessments.css';
 
 function Dashboard() {
   return (
-    <div className="dashboard-container">
-      {/* Sidebar */}
-      <aside className="sidebar">
-        <div className="logo-section">
-          <div className="logo-box">EvalAI</div>
+    <>
+      {/* Header */}
+      <header className="top-header">
+        <div className="breadcrumb">
+          <span>Assessments / Cognitive Psych /</span>
+          <strong>Assignment 3: Memory Models</strong>
         </div>
-        <nav className="sidebar-menu">
-          <div className="menu-label">MENU</div>
-          <ul>
-            <li><a href="#dashboard">Dashboard</a></li>
-            <li><a href="#courses">My Courses</a></li>
-            <li className="active"><a href="#grading">Grading Queue</a></li>
-            <li><a href="#rubrics">Rubrics</a></li>
-            <li><a href="#analytics">Analytics</a></li>
-          </ul>
-        </nav>
-        <div className="sidebar-footer">
-          <div className="settings-section">
-            <a href="#settings">Settings</a>
-          </div>
-          <div className="user-profile">
-            <div className="user-avatar">SC</div>
-            <div className="user-info">
-              <p className="user-name">Dr. Sarah Chen</p>
-              <p className="user-role">Instructor</p>
-            </div>
-          </div>
+        <div className="header-right">
+          <span className="last-saved">Last saved 2m ago</span>
+          <button className="nav-button previous">Previous</button>
+          <button className="nav-button next">Next Submission</button>
         </div>
-      </aside>
+      </header>
 
-      {/* Main Content */}
-      <main className="main-content">
-        {/* Header */}
-        <header className="top-header">
-          <div className="breadcrumb">
-            <span>Assessments / Cognitive Psych /</span>
-            <strong>Assignment 3: Memory Models</strong>
-          </div>
-          <div className="header-right">
-            <span className="last-saved">Last saved 2m ago</span>
-            <button className="nav-button previous">Previous</button>
-            <button className="nav-button next">Next Submission</button>
-          </div>
-        </header>
-
-        <div className="content-wrapper">
+      <div className="content-wrapper">
           {/* Left Section - Submission */}
           <section className="submission-section">
             <div className="completion-badge">AI Evaluation Complete</div>
@@ -166,8 +135,7 @@ function Dashboard() {
             </div>
           </aside>
         </div>
-      </main>
-    </div>
+    </>
   );
 }
 

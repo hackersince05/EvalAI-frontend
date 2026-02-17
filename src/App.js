@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import SplashScreen from './SplashScreen';
 import LandingPage from './LandingPage';
 import LoginPage from './LoginPage';
-import Dashboard from './Dashboard';
+import AppLayout from './AppLayout';
+import DashboardPage from './DashboardPage';
+import Dashboard from './Assessments';
 import './App.css';
+
+const AUTHENTICATED_PAGES = ['dashboard', 'assessments', 'grading', 'rubrics', 'analytics', 'settings'];
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -21,6 +25,19 @@ function App() {
     }
   };
 
+  const isAuthenticated = AUTHENTICATED_PAGES.includes(currentPage);
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'dashboard':
+        return <DashboardPage />;
+      case 'assessments':
+        return <Dashboard />;
+      default:
+        return <DashboardPage />;
+    }
+  };
+
   return (
     <>
       {showSplash && <SplashScreen onFinish={handleSplashFinish} />}
@@ -28,7 +45,11 @@ function App() {
         <>
           {currentPage === 'landing' && <LandingPage onNavigate={handleNavigate} />}
           {currentPage === 'login' && <LoginPage onNavigate={handleNavigate} />}
-          {currentPage === 'dashboard' && <Dashboard userData={userData} onNavigate={handleNavigate} />}
+          {isAuthenticated && (
+            <AppLayout currentPage={currentPage} onNavigate={handleNavigate}>
+              {renderPage()}
+            </AppLayout>
+          )}
         </>
       )}
     </>
