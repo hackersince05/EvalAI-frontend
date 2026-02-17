@@ -1,7 +1,7 @@
 import React from 'react';
 import './LandingPage.css';
 
-function LandingPage() {
+function LandingPage({ onNavigate }) {
   const handleGetStarted = () => {
     // Navigate to dashboard or signup
     window.location.href = '/dashboard';
@@ -15,6 +15,11 @@ function LandingPage() {
   const handleLecturerClick = () => {
     // Navigate to lecturer dashboard
     window.location.href = '/lecturer-dashboard';
+  };
+
+  const handleLoginClick = () => {
+    // Navigate to login page
+    onNavigate('login');
   };
 
   return (
@@ -32,7 +37,7 @@ function LandingPage() {
             <li><a href="#support">Support</a></li>
           </ul>
           <div className="nav-buttons">
-            <button className="btn-login">Log In</button>
+            <button className="btn-login" onClick={handleLoginClick}>Log In</button>
             <button className="btn-get-started" onClick={handleGetStarted}>Get Started</button>
           </div>
         </div>
@@ -44,7 +49,7 @@ function LandingPage() {
           <div className="hero-badge">Interactive, SBERT-powered assessment</div>
           <h1 className="hero-title">Intelligent Assessment<br />Beyond Keywords</h1>
           <p className="hero-description">
-            EvalAI uses Sentence-BERT to evaluate theory answers based on meaning, not just keyword matching. The home page adapts to your role, surfacing the most relevant actions first.
+            EvalAI uses Sentence-BERT to evaluate theory answers based on meaning, not just keyword matching.
           </p>
           <p className="hero-subtext">
             Buttons, toolips, and role-specific sections are designed to stay clear and readable on desktops, tablets, and mobile devices.
