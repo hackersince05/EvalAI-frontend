@@ -1,20 +1,42 @@
 import React from 'react';
+import { useUser } from './UserContext';
 import './Sidebar.css';
 
+// Nav items shown to lecturers — full feature set
+const LECTURER_NAV = [
+  { key: 'dashboard',   label: 'Dashboard' },
+  { key: 'assessments', label: 'Assessments' },
+  { key: 'grading',     label: 'Grading Queue' },
+  { key: 'rubrics',     label: 'Rubrics' },
+  { key: 'analytics',   label: 'Analytics' },
+];
+
+// Nav items shown to students — restricted to their two core actions
+const STUDENT_NAV = [
+  { key: 'take-test', label: 'Take Test' },
+  { key: 'results',   label: 'Past Results' },
+];
+
 function Sidebar({ currentPage, onNavigate }) {
-  const navItems = [
-    { key: 'dashboard', label: 'Dashboard' },
-    { key: 'assessments', label: 'Assessments' },
-    { key: 'grading', label: 'Grading Queue' },
-    { key: 'rubrics', label: 'Rubrics' },
-    { key: 'analytics', label: 'Analytics' },
-  ];
+  // Consume the UserContext to read the active user's role and the logout function.
+  // This avoids needing to prop-drill role all the way from App → AppLayout → Sidebar.
+  const { user, logout } = useUser();
+
+  // Select the correct nav item set based on the user's role.
+  // Defaults to the lecturer nav for any unrecognised role value.
+  const navItems = user?.role === 'student' ? STUDENT_NAV : LECTURER_NAV;
+
+  // Derive display initials from the user's email (e.g. "te" → "TE")
+  const initials = user?.email ? user.email.slice(0, 2).toUpperCase() : '??';
+  const displayRole = user?.role === 'student' ? 'Student' : 'Lecturer';
 
   return (
     <aside className="sidebar">
       <div className="logo-section">
         <div className="logo-box">EvalAI</div>
       </div>
+
+      {/* Role-driven navigation list */}
       <nav className="sidebar-menu">
         <div className="menu-label">MENU</div>
         <ul>
@@ -33,24 +55,44 @@ function Sidebar({ currentPage, onNavigate }) {
           ))}
         </ul>
       </nav>
+
       <div className="sidebar-footer">
+        {/* Settings link — only relevant for lecturers */}
+        {user?.role === 'lecturer' && (
+          <div className="settings-section">
+            <a
+              href="#settings"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('settings');
+              }}
+            >
+              Settings
+            </a>
+          </div>
+        )}
+
+        {/* User profile strip — populated from UserContext, not hardcoded */}
+        <div className="user-profile">
+          <div className="user-avatar">{initials}</div>
+          <div className="user-info">
+            <p className="user-name">{user?.email ?? 'Guest'}</p>
+            <p className="user-role">{displayRole}</p>
+          </div>
+        </div>
+
+        {/* Logout — calls the logout function from UserContext which clears
+            the session from localStorage and navigates back to the landing page */}
         <div className="settings-section">
           <a
-            href="#settings"
+            href="#logout"
             onClick={(e) => {
               e.preventDefault();
-              onNavigate('settings');
+              logout();
             }}
           >
-            Settings
+            Log Out
           </a>
-        </div>
-        <div className="user-profile">
-          <div className="user-avatar">SC</div>
-          <div className="user-info">
-            <p className="user-name">Dr. Sarah Chen</p>
-            <p className="user-role">Instructor</p>
-          </div>
         </div>
       </div>
     </aside>
