@@ -8,6 +8,7 @@ import { UserContext } from './UserContext';
 import SplashScreen from './SplashScreen'; // Animated intro screen on first load
 import LandingPage from './LandingPage';   // Marketing home page
 import LoginPage from './LoginPage';       // Login form; captures email + role selection
+import SignUpPage from './SignUpPage';     // Registration form; same design as login page
 
 // Shared authenticated layout — wraps all logged-in pages with the sidebar
 import AppLayout from './AppLayout';
@@ -125,8 +126,9 @@ function App() {
         {!showSplash && (
           <>
             {/* Public pages — standalone, no sidebar */}
-            {currentPage === 'landing' && <LandingPage onNavigate={handleNavigate} />}
-            {currentPage === 'login'   && <LoginPage   onNavigate={handleNavigate} />}
+            {currentPage === 'landing' && <LandingPage  onNavigate={handleNavigate} />}
+            {currentPage === 'login'   && <LoginPage    onNavigate={handleNavigate} />}
+            {currentPage === 'signup'  && <SignUpPage   onNavigate={handleNavigate} />}
 
             {/* Authenticated pages — wrapped in AppLayout which renders the sidebar.
                 AppLayout passes currentPage and onNavigate down to the Sidebar. */}

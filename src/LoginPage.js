@@ -49,7 +49,12 @@ function LoginPage({ onNavigate }) {
             <div className="logo-icon">EvalAI</div>
           </div>
           <div className="nav-right">
-            <p className="login-subtitle">New to EvalAI? <a href="#signup">Create an account</a></p>
+            <p className="login-subtitle">
+                New to EvalAI?{' '}
+                <a href="#signup" onClick={(e) => { e.preventDefault(); onNavigate('signup'); }}>
+                  Create an account
+                </a>
+              </p>
           </div>
         </div>
       </nav>
@@ -133,7 +138,14 @@ function LoginPage({ onNavigate }) {
           </div>
 
           <p className="signup-prompt">
-            Don't have an account? <a href="#signup" className="signup-link">Sign up here</a>
+            Don't have an account?{' '}
+            <a
+              href="#signup"
+              className="signup-link"
+              onClick={(e) => { e.preventDefault(); onNavigate('signup'); }}
+            >
+              Sign up here
+            </a>
           </p>
         </div>
 
