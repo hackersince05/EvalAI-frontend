@@ -1,39 +1,54 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { supabase } from './supabaseClient';
 import './LoginPage.css';
 
 function LoginPage({ onNavigate }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('student');
+  const [email, setEmail]           = useState('');
+  const [password, setPassword]     = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError]         = useState('');
+  const [loading, setLoading]     = useState(false);
 
-  // Test credentials
-  const TEST_CREDENTIALS = {
-    email: 'test@evalai.com',
-    password: 'Test123'
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
-    // Validate credentials
-    if (email === TEST_CREDENTIALS.email && password === TEST_CREDENTIALS.password) {
-      // Store user session
-      const userData = {
-        email,
-        role,
-        rememberMe,
-        isAuthenticated: true
-      };
-      localStorage.setItem('evalai_user', JSON.stringify(userData));
-      
-      // Navigate to dashboard
-      onNavigate('dashboard', { email, role });
-    } else {
-      setError('Invalid email or password. Use test@evalai.com / Test123');
+    // Authenticate with Supabase — replaces the previous dummy credential check
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError) {
+      setLoading(false);
+      setError(signInError.message);
+      return;
     }
+
+    // Fetch the user's profile to get their role.
+    // The profiles table is populated automatically by the handle_new_user trigger on sign up.
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('role, full_name')
+      .eq('id', data.user.id)
+      .single();
+
+    setLoading(false);
+
+    if (profileError || !profile) {
+      setError('Could not load your profile. Please try again.');
+      return;
+    }
+
+    // Pass user data to App.js for optimistic state update before
+    // the onAuthStateChange listener fires and confirms the session.
+    onNavigate('dashboard', {
+      id:       data.user.id,
+      email:    data.user.email,
+      fullName: profile.full_name,
+      role:     profile.role,
+    });
   };
 
   return (
@@ -41,8 +56,8 @@ function LoginPage({ onNavigate }) {
       {/* Navigation Header */}
       <nav className="navbar">
         <div className="nav-container">
-          <div 
-            className="logo" 
+          <div
+            className="logo"
             onClick={() => onNavigate('landing')}
             style={{ cursor: 'pointer' }}
           >
@@ -67,6 +82,7 @@ function LoginPage({ onNavigate }) {
 
           <form onSubmit={handleSubmit} className="login-form">
             {error && <div className="form-error">{error}</div>}
+
             <div className="form-group">
               <label htmlFor="email" className="form-label">Email Address</label>
               <input
@@ -93,20 +109,6 @@ function LoginPage({ onNavigate }) {
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="role" className="form-label">I am a</label>
-              <select
-                id="role"
-                className="form-select"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                required
-              >
-                <option value="student">Student</option>
-                <option value="lecturer">Lecturer</option>
-              </select>
-            </div>
-
             <div className="form-options">
               <div className="checkbox-group">
                 <input
@@ -121,7 +123,9 @@ function LoginPage({ onNavigate }) {
               <a href="#forgot" className="forgot-link">Forgot password?</a>
             </div>
 
-            <button type="submit" className="btn-login-submit">Sign In</button>
+            <button type="submit" className="btn-login-submit" disabled={loading}>
+              {loading ? 'Signing in…' : 'Sign In'}
+            </button>
           </form>
 
           <div className="form-divider">
