@@ -1,6 +1,6 @@
 /* ========== SIDEBAR ========== */
 .sidebar {
-  width: 200px;
+  width: 250px;
   min-height: 100vh;
   background-color: #ffffff;
   border-right: 1px solid #e0e0e0;
@@ -22,9 +22,9 @@
 .logo-box {
   font-size: 18px;
   font-weight: 700;
-  color: #333;
+  color: #ffffff;
   padding: 10px;
-  background: #f0f0f0;
+  background: #333;
   border-radius: 6px;
   text-align: center;
 }
@@ -65,8 +65,8 @@
 }
 
 .sidebar-menu li.active a {
-  background-color: #e8e8e8;
-  color: #333;
+  background-color: #333;
+  color: #ffffff;
   font-weight: 600;
 }
 
