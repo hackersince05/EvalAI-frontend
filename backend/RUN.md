@@ -66,7 +66,7 @@ DATABASE_URL=postgresql://your_db_user:your_db_password@localhost:5432/evalai_db
 SECRET_KEY=some-long-random-secret-key
 DEBUG=False
 BACKEND_URL=http://localhost:8000
-FRONTEND_URL=http://localhost:5173
+FRONTEND_URL=http://localhost:3000
 MODEL_NAME=all-MiniLM-L6-v2
 
 # OAuth — leave blank if not using
@@ -164,18 +164,18 @@ deactivate
 
 ## Quick Reference — Common Commands
 
-| Task | Command |
-|---|---|
-| Activate virtual environment (Mac/Linux) | `source venv/bin/activate` |
-| Activate virtual environment (Windows) | `venv\Scripts\activate` |
-| Install / update dependencies | `pip install -r requirements.txt` |
-| Run database migrations | `alembic upgrade head` |
-| Start server (Windows) | `python run.py` |
-| Start server (Mac/Linux) | `uvicorn app.main:app --reload --port 8000` |
-| View API docs | http://localhost:8000/docs |
-| Health check | http://localhost:8000/health |
-| Stop server | `Ctrl + C` |
-| Deactivate virtual environment | `deactivate` |
+| Task                                     | Command                                     |
+| ---------------------------------------- | ------------------------------------------- |
+| Activate virtual environment (Mac/Linux) | `source venv/bin/activate`                  |
+| Activate virtual environment (Windows)   | `venv\Scripts\activate`                     |
+| Install / update dependencies            | `pip install -r requirements.txt`           |
+| Run database migrations                  | `alembic upgrade head`                      |
+| Start server (Windows)                   | `python run.py`                             |
+| Start server (Mac/Linux)                 | `uvicorn app.main:app --reload --port 8000` |
+| View API docs                            | http://localhost:8000/docs                  |
+| Health check                             | http://localhost:8000/health                |
+| Stop server                              | `Ctrl + C`                                  |
+| Deactivate virtual environment           | `deactivate`                                |
 
 ---
 
