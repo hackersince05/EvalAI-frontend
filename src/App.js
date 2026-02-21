@@ -20,6 +20,7 @@ import AppLayout from './AppLayout';
 import DashboardPage from './lecturer/DashboardPage'; // Lecturer overview / home
 import Assessments from './lecturer/Assessments';     // Assessment management
 import GradingQueue from './lecturer/GradingQueue';   // Submissions awaiting grading review
+import GradingDetail from './lecturer/GradingDetail'; // Individual submission evaluation view
 import Rubrics from './lecturer/Rubrics';             // Rubric builder and management
 import Analytics from './lecturer/Analytics';         // Class performance analytics
 
@@ -33,7 +34,7 @@ import './App.css';
 // Any key in this list causes AppLayout (sidebar) to be rendered.
 const AUTHENTICATED_PAGES = [
   // Lecturer routes
-  'dashboard', 'assessments', 'grading', 'rubrics', 'analytics', 'settings',
+  'dashboard', 'assessments', 'grading', 'grading-detail', 'rubrics', 'analytics', 'settings',
   // Student routes
   'take-test', 'results',
 ];
@@ -51,6 +52,9 @@ function App() {
   // Holds the authenticated user's data — set by Supabase session events, not localStorage.
   // null means unauthenticated. Shape: { id, email, fullName, role, isAuthenticated }
   const [user, setUser] = useState(null);
+
+  // Holds the submission object selected from GradingQueue so GradingDetail can render it.
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
 
   // On mount: check for an active Supabase session (handles page refresh)
   // and subscribe to auth state changes for the lifetime of the app.
@@ -118,6 +122,14 @@ function App() {
   // `data` — optional user payload for optimistic state update right after sign-in,
   //           before the Supabase onAuthStateChange listener has a chance to fire.
   const handleNavigate = (page, data) => {
+    // When navigating to a grading detail view, store the submission object separately.
+    // For all other pages, `data` is an optional user payload for post-login hydration.
+    if (page === 'grading-detail') {
+      setSelectedSubmission(data ?? null);
+      setCurrentPage('grading-detail');
+      return;
+    }
+
     if (data) setUser({ ...data, isAuthenticated: true });
 
     const role = data?.role ?? user?.role;
@@ -147,7 +159,8 @@ function App() {
       // --- Lecturer routes ---
       case 'dashboard':   return <DashboardPage onNavigate={handleNavigate} />;
       case 'assessments': return <Assessments    onNavigate={handleNavigate} />;
-      case 'grading':     return <GradingQueue  onNavigate={handleNavigate} />;
+      case 'grading':        return <GradingQueue  onNavigate={handleNavigate} />;
+      case 'grading-detail': return <GradingDetail submission={selectedSubmission} onNavigate={handleNavigate} />;
       case 'rubrics':     return <Rubrics       onNavigate={handleNavigate} />;
       case 'analytics':   return <Analytics     onNavigate={handleNavigate} />;
 
