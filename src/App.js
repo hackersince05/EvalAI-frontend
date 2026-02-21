@@ -141,20 +141,21 @@ function App() {
   const isAuthenticated = AUTHENTICATED_PAGES.includes(currentPage);
 
   // Maps the active route key to its corresponding page component.
+  // handleNavigate is forwarded so pages can trigger in-app navigation (e.g. "Start Grading" CTA).
   const renderPage = () => {
     switch (currentPage) {
       // --- Lecturer routes ---
-      case 'dashboard':   return <DashboardPage />;
-      case 'assessments': return <Dashboard />;
-      case 'grading':     return <GradingQueue />;
-      case 'rubrics':     return <Rubrics />;
-      case 'analytics':   return <Analytics />;
+      case 'dashboard':   return <DashboardPage onNavigate={handleNavigate} />;
+      case 'assessments': return <Dashboard     onNavigate={handleNavigate} />;
+      case 'grading':     return <GradingQueue  onNavigate={handleNavigate} />;
+      case 'rubrics':     return <Rubrics       onNavigate={handleNavigate} />;
+      case 'analytics':   return <Analytics     onNavigate={handleNavigate} />;
 
       // --- Student routes ---
-      case 'take-test':   return <TakeTest />;
-      case 'results':     return <Results />;
+      case 'take-test':   return <TakeTest  onNavigate={handleNavigate} />;
+      case 'results':     return <Results   onNavigate={handleNavigate} />;
 
-      default:            return <DashboardPage />;
+      default:            return <DashboardPage onNavigate={handleNavigate} />;
     }
   };
 
