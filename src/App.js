@@ -18,7 +18,7 @@ import AppLayout from './AppLayout';
 
 // Lecturer page components
 import DashboardPage from './lecturer/DashboardPage'; // Lecturer overview / home
-import Dashboard from './lecturer/Assessments';       // Assessment management
+import Assessments from './lecturer/Assessments';     // Assessment management
 import GradingQueue from './lecturer/GradingQueue';   // Submissions awaiting grading review
 import Rubrics from './lecturer/Rubrics';             // Rubric builder and management
 import Analytics from './lecturer/Analytics';         // Class performance analytics
@@ -146,7 +146,7 @@ function App() {
     switch (currentPage) {
       // --- Lecturer routes ---
       case 'dashboard':   return <DashboardPage onNavigate={handleNavigate} />;
-      case 'assessments': return <Dashboard     onNavigate={handleNavigate} />;
+      case 'assessments': return <Assessments    onNavigate={handleNavigate} />;
       case 'grading':     return <GradingQueue  onNavigate={handleNavigate} />;
       case 'rubrics':     return <Rubrics       onNavigate={handleNavigate} />;
       case 'analytics':   return <Analytics     onNavigate={handleNavigate} />;
