@@ -27,27 +27,32 @@ function LoginPage({ onNavigate }) {
     }
 
     // Fetch the user's profile to get their role.
-    // The profiles table is populated automatically by the handle_new_user trigger on sign up.
-    const { data: profile, error: profileError } = await supabase
+    // Primary source: profiles table (populated by the handle_new_user trigger on sign up).
+    // Fallback: user_metadata set in supabase.auth.signUp() options.data —
+    // used when the trigger hasn't run yet or there is no profile row for this user.
+    const { data: profile } = await supabase
       .from('profiles')
       .select('role, full_name')
       .eq('id', data.user.id)
       .single();
 
+    const role     = profile?.role     ?? data.user.user_metadata?.role;
+    const fullName = profile?.full_name ?? data.user.user_metadata?.full_name ?? '';
+
     setLoading(false);
 
-    if (profileError || !profile) {
-      setError('Could not load your profile. Please try again.');
+    if (!role) {
+      setError('Could not determine your role. Please contact support.');
       return;
     }
 
     // Pass user data to App.js for optimistic state update before
     // the onAuthStateChange listener fires and confirms the session.
     onNavigate('dashboard', {
-      id:       data.user.id,
-      email:    data.user.email,
-      fullName: profile.full_name,
-      role:     profile.role,
+      id: data.user.id,
+      email: data.user.email,
+      fullName,
+      role,
     });
   };
 

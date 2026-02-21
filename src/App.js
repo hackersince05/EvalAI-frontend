@@ -86,19 +86,25 @@ function App() {
       .eq('id', session.user.id)
       .single();
 
-    if (profile) {
+    // Primary source: profiles table row.
+    // Fallback: user_metadata written at sign-up time — covers cases where the
+    // handle_new_user trigger hasn't run or the profiles row doesn't exist yet.
+    const role     = profile?.role     ?? session.user.user_metadata?.role;
+    const fullName = profile?.full_name ?? session.user.user_metadata?.full_name ?? '';
+
+    if (role) {
       setUser({
         id:              session.user.id,
         email:           session.user.email,
-        fullName:        profile.full_name,
-        role:            profile.role,
+        fullName,
+        role,
         isAuthenticated: true,
       });
 
       // If the user is still on a public page (e.g. after a refresh), send them home
       setCurrentPage(prev =>
         ['landing', 'login', 'signup'].includes(prev)
-          ? (ROLE_HOME[profile.role] ?? 'dashboard')
+          ? (ROLE_HOME[role] ?? 'dashboard')
           : prev
       );
     }
