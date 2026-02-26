@@ -8,10 +8,12 @@ import { UserContext } from './UserContext';
 import { supabase } from './supabaseClient';
 
 // Public-facing pages — no login required
-import SplashScreen from './SplashScreen'; // Animated intro screen on first load
-import LandingPage from './LandingPage';   // Marketing home page
-import LoginPage from './LoginPage';       // Login form
-import SignUpPage from './SignUpPage';     // Registration form
+import SplashScreen from './SplashScreen';             // Animated intro screen on first load
+import LandingPage from './LandingPage';               // Marketing home page
+import LoginPage from './LoginPage';                   // Login form
+import SignUpPage from './SignUpPage';                 // Registration form
+import ForgotPasswordPage from './ForgotPasswordPage'; // Step 1 of password reset — email entry
+import ResetPasswordPage from './ResetPasswordPage';   // Step 2 of password reset — new password
 
 // Shared authenticated layout — wraps all logged-in pages with the sidebar
 import AppLayout from './AppLayout';
@@ -67,7 +69,14 @@ function App() {
     // onAuthStateChange fires on: sign in, sign out, token refresh, and initial load.
     // This is the single source of truth for session state.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (event, session) => {
+        if (event === 'PASSWORD_RECOVERY') {
+          // User clicked the reset link in their email — Supabase has already
+          // exchanged the token for a live session. Route to the reset form
+          // instead of the normal post-login dashboard.
+          setCurrentPage('reset-password');
+          return;
+        }
         if (session) {
           hydrateUserFromSession(session);
         } else {
@@ -105,9 +114,10 @@ function App() {
         isAuthenticated: true,
       });
 
-      // If the user is still on a public page (e.g. after a refresh), send them home
+      // If the user is still on a public page (e.g. after a refresh), send them home.
+      // reset-password is excluded so a user mid-reset isn't redirected away.
       setCurrentPage(prev =>
-        ['landing', 'login', 'signup'].includes(prev)
+        ['landing', 'login', 'signup', 'forgot-password'].includes(prev)
           ? (ROLE_HOME[role] ?? 'dashboard')
           : prev
       );
@@ -184,9 +194,11 @@ function App() {
         {!showSplash && (
           <>
             {/* Public pages — standalone, no sidebar */}
-            {currentPage === 'landing' && <LandingPage onNavigate={handleNavigate} />}
-            {currentPage === 'login'   && <LoginPage   onNavigate={handleNavigate} />}
-            {currentPage === 'signup'  && <SignUpPage  onNavigate={handleNavigate} />}
+            {currentPage === 'landing'          && <LandingPage        onNavigate={handleNavigate} />}
+            {currentPage === 'login'            && <LoginPage          onNavigate={handleNavigate} />}
+            {currentPage === 'signup'           && <SignUpPage         onNavigate={handleNavigate} />}
+            {currentPage === 'forgot-password'  && <ForgotPasswordPage onNavigate={handleNavigate} />}
+            {currentPage === 'reset-password'   && <ResetPasswordPage  onNavigate={handleNavigate} />}
 
             {/* Authenticated pages — wrapped in AppLayout which renders the sidebar.
                 AppLayout passes currentPage and onNavigate down to the Sidebar. */}
