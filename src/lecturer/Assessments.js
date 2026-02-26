@@ -5,7 +5,6 @@ import './Assessments.css';
 
 const FILTERS = ['All', 'Draft', 'Active', 'Closed'];
 
-// A single blank question entry used when adding a new question
 const BLANK_QUESTION = {
   text:         '',
   marks:        '',
@@ -33,11 +32,12 @@ function Assessments({ onNavigate }) {
   const [fetchError,   setFetchError]   = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
   const [panelOpen,    setPanelOpen]    = useState(false);
+  const [editingId,    setEditingId]    = useState(null);   // null = create, UUID = edit
   const [form,         setForm]         = useState(BLANK_FORM);
   const [saving,       setSaving]       = useState(false);
   const [toast,        setToast]        = useState('');
 
-  // ── Fetch assessments from Supabase ───────────────────────────────────────
+  // ── Fetch list ────────────────────────────────────────────────────────────
   const fetchAssessments = useCallback(async () => {
     setLoading(true);
     setFetchError('');
@@ -61,25 +61,19 @@ function Assessments({ onNavigate }) {
       return;
     }
 
-    // Derive question count and total marks from the nested questions array.
-    // submissions will be wired up once the submissions table exists.
-    const transformed = data.map(a => ({
+    setAssessments(data.map(a => ({
       id:          a.id,
       title:       a.title,
       topic:       a.topic,
       status:      a.status,
       questions:   a.questions.length,
       maxMarks:    a.questions.reduce((sum, q) => sum + (q.marks || 0), 0),
-      submissions: 0,
-    }));
-
-    setAssessments(transformed);
+      submissions: 0,   // placeholder until submissions table exists
+    })));
     setLoading(false);
   }, [user.id]);
 
-  useEffect(() => {
-    fetchAssessments();
-  }, [fetchAssessments]);
+  useEffect(() => { fetchAssessments(); }, [fetchAssessments]);
 
   // ── Derived display values ────────────────────────────────────────────────
   const visible = activeFilter === 'All'
@@ -91,35 +85,65 @@ function Assessments({ onNavigate }) {
     return acc;
   }, {});
 
-  // Auto-calculate total marks across all questions in the form
   const totalMarks = form.questions.reduce((sum, q) => sum + (parseInt(q.marks, 10) || 0), 0);
 
-  // ── Form helpers ──────────────────────────────────────────────────────────
+  // ── Form field helpers ────────────────────────────────────────────────────
   const setTopField = (key) => (e) => setForm(prev => ({ ...prev, [key]: e.target.value }));
 
   const setQuestionField = (idx, key) => (e) => {
-    setForm(prev => {
-      const questions = prev.questions.map((q, i) =>
-        i === idx ? { ...q, [key]: e.target.value } : q
-      );
-      return { ...prev, questions };
-    });
-  };
-
-  const addQuestion = () => {
-    setForm(prev => ({ ...prev, questions: [...prev.questions, { ...BLANK_QUESTION }] }));
-  };
-
-  const removeQuestion = (idx) => {
     setForm(prev => ({
       ...prev,
-      questions: prev.questions.filter((_, i) => i !== idx),
+      questions: prev.questions.map((q, i) => i === idx ? { ...q, [key]: e.target.value } : q),
     }));
   };
 
+  const addQuestion    = () => setForm(prev => ({ ...prev, questions: [...prev.questions, { ...BLANK_QUESTION }] }));
+  const removeQuestion = (idx) => setForm(prev => ({ ...prev, questions: prev.questions.filter((_, i) => i !== idx) }));
+
   // ── Panel open / close ────────────────────────────────────────────────────
-  const openPanel  = () => { setForm(BLANK_FORM); setPanelOpen(true); };
-  const closePanel = () => { if (!saving) setPanelOpen(false); };
+  const openCreatePanel = () => {
+    setEditingId(null);
+    setForm(BLANK_FORM);
+    setPanelOpen(true);
+  };
+
+  // Fetch full question detail for the chosen draft and open the panel pre-filled
+  const openEditPanel = async (a) => {
+    setEditingId(a.id);
+    setForm({ title: a.title, topic: a.topic || '', questions: [] });
+    setPanelOpen(true);
+
+    const { data, error } = await supabase
+      .from('questions')
+      .select('text, marks, answer_length, sample_answer')
+      .eq('assessment_id', a.id)
+      .order('order_index', { ascending: true });
+
+    if (error) {
+      showToast('Failed to load question details.');
+      setPanelOpen(false);
+      setEditingId(null);
+      return;
+    }
+
+    setForm(prev => ({
+      ...prev,
+      questions: data.length > 0
+        ? data.map(q => ({
+            text:         q.text,
+            marks:        String(q.marks),
+            answerLength: q.answer_length,
+            sampleAnswer: q.sample_answer || '',
+          }))
+        : [{ ...BLANK_QUESTION }],   // safety fallback for drafts with no questions yet
+    }));
+  };
+
+  const closePanel = () => {
+    if (saving) return;
+    setPanelOpen(false);
+    setEditingId(null);
+  };
 
   const showToast = (msg) => {
     setToast(msg);
@@ -130,21 +154,41 @@ function Assessments({ onNavigate }) {
   const saveAssessment = async (status) => {
     setSaving(true);
     try {
-      // Step 1: insert the assessment row
-      const { data: assessment, error: aErr } = await supabase
-        .from('assessments')
-        .insert({ title: form.title, topic: form.topic, status, created_by: user.id })
-        .select()
-        .single();
+      let assessmentId;
 
-      if (aErr) throw aErr;
+      if (editingId) {
+        // ── UPDATE path ──
+        const { error: aErr } = await supabase
+          .from('assessments')
+          .update({ title: form.title, topic: form.topic, status })
+          .eq('id', editingId);
+        if (aErr) throw aErr;
 
-      // Step 2: insert all questions linked to the new assessment
+        // Replace questions by deleting the old set and re-inserting
+        const { error: dErr } = await supabase
+          .from('questions')
+          .delete()
+          .eq('assessment_id', editingId);
+        if (dErr) throw dErr;
+
+        assessmentId = editingId;
+      } else {
+        // ── INSERT path ──
+        const { data: assessment, error: aErr } = await supabase
+          .from('assessments')
+          .insert({ title: form.title, topic: form.topic, status, created_by: user.id })
+          .select()
+          .single();
+        if (aErr) throw aErr;
+        assessmentId = assessment.id;
+      }
+
+      // Insert all questions (both paths)
       const { error: qErr } = await supabase
         .from('questions')
         .insert(
           form.questions.map((q, i) => ({
-            assessment_id: assessment.id,
+            assessment_id: assessmentId,
             order_index:   i,
             text:          q.text,
             marks:         parseInt(q.marks, 10) || 0,
@@ -152,15 +196,15 @@ function Assessments({ onNavigate }) {
             sample_answer: q.sampleAnswer,
           }))
         );
-
       if (qErr) throw qErr;
 
       closePanel();
-      showToast(status === 'Draft'
-        ? 'Assessment saved as draft.'
-        : 'Assessment published successfully.'
+      showToast(
+        editingId
+          ? (status === 'Draft' ? 'Draft updated successfully.' : 'Assessment published.')
+          : (status === 'Draft' ? 'Assessment saved as draft.'  : 'Assessment published successfully.')
       );
-      fetchAssessments();   // refresh the table
+      fetchAssessments();
     } catch (err) {
       showToast('Something went wrong. Please try again.');
       console.error(err);
@@ -192,7 +236,7 @@ function Assessments({ onNavigate }) {
             {loading ? 'Loading…' : `${assessments.length} assessment${assessments.length !== 1 ? 's' : ''} total`}
           </div>
         </div>
-        <button className="assess-btn-primary" onClick={openPanel}>
+        <button className="assess-btn-primary" onClick={openCreatePanel}>
           + Create Assessment
         </button>
       </div>
@@ -257,7 +301,15 @@ function Assessments({ onNavigate }) {
                     </td>
                     <td>
                       <div className="assess-row-actions">
-                        <button className="assess-action-btn">Edit</button>
+                        {/* Edit is only available for Draft assessments */}
+                        {a.status === 'Draft' && (
+                          <button
+                            className="assess-action-btn"
+                            onClick={() => openEditPanel(a)}
+                          >
+                            Edit
+                          </button>
+                        )}
                         {a.status === 'Active' && (
                           <button
                             className="assess-action-btn assess-action-grade"
@@ -282,16 +334,17 @@ function Assessments({ onNavigate }) {
       {/* Backdrop */}
       {panelOpen && <div className="assess-backdrop" onClick={closePanel} />}
 
-      {/* Slide-out create panel */}
+      {/* Slide-out panel — shared by create and edit */}
       <aside className={`assess-panel ${panelOpen ? 'open' : ''}`}>
         <div className="assess-panel-header">
-          <div className="assess-panel-title">Create Assessment</div>
+          <div className="assess-panel-title">
+            {editingId ? 'Edit Assessment' : 'Create Assessment'}
+          </div>
           <button className="assess-panel-close" onClick={closePanel} disabled={saving}>&#x2715;</button>
         </div>
 
         <form className="assess-panel-form">
 
-          {/* ── Assessment-level fields ── */}
           <div className="assess-field">
             <label className="assess-label">Assessment Title</label>
             <input
@@ -315,7 +368,7 @@ function Assessments({ onNavigate }) {
             />
           </div>
 
-          {/* ── Questions section ── */}
+          {/* Questions section */}
           <div className="assess-q-section">
             <div className="assess-q-section-header">
               <span>Questions ({form.questions.length})</span>
@@ -392,11 +445,7 @@ function Assessments({ onNavigate }) {
               </div>
             ))}
 
-            <button
-              type="button"
-              className="assess-add-q-btn"
-              onClick={addQuestion}
-            >
+            <button type="button" className="assess-add-q-btn" onClick={addQuestion}>
               + Add Question
             </button>
           </div>
