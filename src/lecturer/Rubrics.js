@@ -1,6 +1,6 @@
 function Rubrics() {
   return (
-    <div>Rubrics</div>
+    <div>Rubrics-Coming Soon</div>
   )
 }
 

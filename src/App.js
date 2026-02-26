@@ -61,6 +61,9 @@ function App() {
   // Holds the submission object selected from GradingQueue so GradingDetail can render it.
   const [selectedSubmission, setSelectedSubmission] = useState(null);
 
+  // Holds the assessment object selected from StudentAssessments so TakeTest can render it.
+  const [selectedAssessment, setSelectedAssessment] = useState(null);
+
   // On mount: check for an active Supabase session (handles page refresh)
   // and subscribe to auth state changes for the lifetime of the app.
   useEffect(() => {
@@ -143,6 +146,13 @@ function App() {
       return;
     }
 
+    // When navigating to the test-taking view, store the selected assessment object.
+    if (page === 'take-test') {
+      setSelectedAssessment(data ?? null);
+      setCurrentPage('take-test');
+      return;
+    }
+
     if (data) setUser({ ...data, isAuthenticated: true });
 
     const role = data?.role ?? user?.role;
@@ -181,7 +191,7 @@ function App() {
       case 'student-dashboard':   return <StudentDashboard   onNavigate={handleNavigate} />;
       case 'student-assessments': return <StudentAssessments onNavigate={handleNavigate} />;
       case 'student-analytics':   return <StudentAnalytics   onNavigate={handleNavigate} />;
-      case 'take-test':           return <TakeTest           onNavigate={handleNavigate} />;
+      case 'take-test':           return <TakeTest           assessment={selectedAssessment} onNavigate={handleNavigate} />;
       case 'results':             return <Results            onNavigate={handleNavigate} />;
 
       default:            return <DashboardPage onNavigate={handleNavigate} />;
