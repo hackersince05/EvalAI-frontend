@@ -125,7 +125,13 @@ function LoginPage({ onNavigate }) {
                 />
                 <label htmlFor="remember" className="checkbox-label">Remember me</label>
               </div>
-              <a href="#forgot" className="forgot-link">Forgot password?</a>
+              <a
+                href="#forgot"
+                className="forgot-link"
+                onClick={(e) => { e.preventDefault(); onNavigate('forgot-password'); }}
+              >
+                Forgot password?
+              </a>
             </div>
 
             <button type="submit" className="btn-login-submit" disabled={loading}>
