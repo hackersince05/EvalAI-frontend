@@ -434,6 +434,96 @@
   justify-content: flex-end;
 }
 
+/* ========== QUESTION CARDS ========== */
+.assess-q-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.assess-q-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #555;
+}
+
+.assess-q-total {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1a1a1a;
+  background: #f0f0f0;
+  padding: 3px 10px;
+  border-radius: 20px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.assess-q-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: #fafafa;
+}
+
+.assess-q-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.assess-q-card-num {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.assess-q-remove-btn {
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: #f0f0f0;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: #666;
+  transition: background 0.15s, color 0.15s;
+  font-family: inherit;
+}
+
+.assess-q-remove-btn:hover {
+  background: #fee2e2;
+  color: #c33;
+}
+
+.assess-add-q-btn {
+  width: 100%;
+  padding: 10px;
+  border: 1px dashed #ccc;
+  border-radius: 6px;
+  background: white;
+  color: #667eea;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.assess-add-q-btn:hover {
+  border-color: #667eea;
+  background: #f5f4ff;
+}
+
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   .assess-topbar {
