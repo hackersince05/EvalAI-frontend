@@ -11,10 +11,11 @@ const LECTURER_NAV = [
   { key: 'analytics',   label: 'Analytics' },
 ];
 
-// Nav items shown to students — restricted to their two core actions
+// Nav items shown to students
 const STUDENT_NAV = [
-  { key: 'take-test', label: 'Take Test' },
-  { key: 'results',   label: 'Past Results' },
+  { key: 'student-dashboard',   label: 'Dashboard'    },
+  { key: 'student-assessments', label: 'Assessments'  },
+  { key: 'student-analytics',   label: 'Analytics'    },
 ];
 
 function Sidebar({ currentPage, onNavigate }) {
