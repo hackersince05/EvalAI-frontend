@@ -1,14 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { supabase } from '../supabaseClient';
+import { useUser } from '../UserContext';
 import './Assessments.css';
-
-// ── Mock data ──────────────────────────────────────────────────────────────
-const MOCK_ASSESSMENTS = [
-  { id: 'A001', title: 'CS-401 Midterm',    topic: 'Theory of Computation', questions: 5, maxMarks: 100, submissions: 48, status: 'Active'  },
-  { id: 'A002', title: 'CS-301 Quiz 2',     topic: 'Data Structures',       questions: 3, maxMarks: 30,  submissions: 0,  status: 'Draft'   },
-  { id: 'A003', title: 'CS-201 Final',      topic: 'Algorithms',            questions: 8, maxMarks: 150, submissions: 62, status: 'Closed'  },
-  { id: 'A004', title: 'CS-401 Quiz 1',     topic: 'Automata Theory',       questions: 4, maxMarks: 40,  submissions: 51, status: 'Closed'  },
-  { id: 'A005', title: 'CS-501 Assignment', topic: 'Machine Learning',      questions: 2, maxMarks: 50,  submissions: 12, status: 'Active'  },
-];
 
 const FILTERS = ['All', 'Draft', 'Active', 'Closed'];
 
@@ -33,27 +26,77 @@ function statusClass(s) {
 
 // ── Component ──────────────────────────────────────────────────────────────
 function Assessments({ onNavigate }) {
-  const [activeFilter, setActiveFilter] = useState('All');
-  const [panelOpen, setPanelOpen]       = useState(false);
-  const [form, setForm]                 = useState(BLANK_FORM);
-  const [toast, setToast]               = useState('');
+  const { user } = useUser();
 
+  const [assessments,  setAssessments]  = useState([]);
+  const [loading,      setLoading]      = useState(true);
+  const [fetchError,   setFetchError]   = useState('');
+  const [activeFilter, setActiveFilter] = useState('All');
+  const [panelOpen,    setPanelOpen]    = useState(false);
+  const [form,         setForm]         = useState(BLANK_FORM);
+  const [saving,       setSaving]       = useState(false);
+  const [toast,        setToast]        = useState('');
+
+  // ── Fetch assessments from Supabase ───────────────────────────────────────
+  const fetchAssessments = useCallback(async () => {
+    setLoading(true);
+    setFetchError('');
+
+    const { data, error } = await supabase
+      .from('assessments')
+      .select(`
+        id,
+        title,
+        topic,
+        status,
+        created_at,
+        questions ( id, marks )
+      `)
+      .eq('created_by', user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      setFetchError('Failed to load assessments.');
+      setLoading(false);
+      return;
+    }
+
+    // Derive question count and total marks from the nested questions array.
+    // submissions will be wired up once the submissions table exists.
+    const transformed = data.map(a => ({
+      id:          a.id,
+      title:       a.title,
+      topic:       a.topic,
+      status:      a.status,
+      questions:   a.questions.length,
+      maxMarks:    a.questions.reduce((sum, q) => sum + (q.marks || 0), 0),
+      submissions: 0,
+    }));
+
+    setAssessments(transformed);
+    setLoading(false);
+  }, [user.id]);
+
+  useEffect(() => {
+    fetchAssessments();
+  }, [fetchAssessments]);
+
+  // ── Derived display values ────────────────────────────────────────────────
   const visible = activeFilter === 'All'
-    ? MOCK_ASSESSMENTS
-    : MOCK_ASSESSMENTS.filter(a => a.status === activeFilter);
+    ? assessments
+    : assessments.filter(a => a.status === activeFilter);
 
   const counts = FILTERS.reduce((acc, f) => {
-    acc[f] = f === 'All' ? MOCK_ASSESSMENTS.length : MOCK_ASSESSMENTS.filter(a => a.status === f).length;
+    acc[f] = f === 'All' ? assessments.length : assessments.filter(a => a.status === f).length;
     return acc;
   }, {});
 
-  // Auto-calculate total marks across all questions
+  // Auto-calculate total marks across all questions in the form
   const totalMarks = form.questions.reduce((sum, q) => sum + (parseInt(q.marks, 10) || 0), 0);
 
   // ── Form helpers ──────────────────────────────────────────────────────────
   const setTopField = (key) => (e) => setForm(prev => ({ ...prev, [key]: e.target.value }));
 
-  // Update a single field on a specific question by index
   const setQuestionField = (idx, key) => (e) => {
     setForm(prev => {
       const questions = prev.questions.map((q, i) =>
@@ -76,29 +119,66 @@ function Assessments({ onNavigate }) {
 
   // ── Panel open / close ────────────────────────────────────────────────────
   const openPanel  = () => { setForm(BLANK_FORM); setPanelOpen(true); };
-  const closePanel = () => setPanelOpen(false);
+  const closePanel = () => { if (!saving) setPanelOpen(false); };
 
   const showToast = (msg) => {
     setToast(msg);
-    setTimeout(() => setToast(''), 3000);
+    setTimeout(() => setToast(''), 3500);
   };
 
-  // ── Submit handlers ───────────────────────────────────────────────────────
+  // ── Write to Supabase ─────────────────────────────────────────────────────
+  const saveAssessment = async (status) => {
+    setSaving(true);
+    try {
+      // Step 1: insert the assessment row
+      const { data: assessment, error: aErr } = await supabase
+        .from('assessments')
+        .insert({ title: form.title, topic: form.topic, status, created_by: user.id })
+        .select()
+        .single();
+
+      if (aErr) throw aErr;
+
+      // Step 2: insert all questions linked to the new assessment
+      const { error: qErr } = await supabase
+        .from('questions')
+        .insert(
+          form.questions.map((q, i) => ({
+            assessment_id: assessment.id,
+            order_index:   i,
+            text:          q.text,
+            marks:         parseInt(q.marks, 10) || 0,
+            answer_length: q.answerLength,
+            sample_answer: q.sampleAnswer,
+          }))
+        );
+
+      if (qErr) throw qErr;
+
+      closePanel();
+      showToast(status === 'Draft'
+        ? 'Assessment saved as draft.'
+        : 'Assessment published successfully.'
+      );
+      fetchAssessments();   // refresh the table
+    } catch (err) {
+      showToast('Something went wrong. Please try again.');
+      console.error(err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleSaveDraft = (e) => {
     e.preventDefault();
-    if (!form.title) return;
-    console.log('Draft saved:', form);
-    closePanel();
-    showToast('Assessment saved as draft.');
+    if (!form.title.trim()) return;
+    saveAssessment('Draft');
   };
 
   const handlePublish = (e) => {
     e.preventDefault();
-    const invalid = !form.title || form.questions.some(q => !q.text.trim());
-    if (invalid) return;
-    console.log('Assessment published:', form);
-    closePanel();
-    showToast('Assessment published successfully.');
+    if (!form.title.trim() || form.questions.some(q => !q.text.trim())) return;
+    saveAssessment('Active');
   };
 
   return (
@@ -108,7 +188,9 @@ function Assessments({ onNavigate }) {
       <div className="assess-topbar">
         <div>
           <div className="assess-topbar-title">Assessments</div>
-          <div className="assess-topbar-sub">{MOCK_ASSESSMENTS.length} assessments total</div>
+          <div className="assess-topbar-sub">
+            {loading ? 'Loading…' : `${assessments.length} assessment${assessments.length !== 1 ? 's' : ''} total`}
+          </div>
         </div>
         <button className="assess-btn-primary" onClick={openPanel}>
           + Create Assessment
@@ -131,56 +213,67 @@ function Assessments({ onNavigate }) {
 
       {/* Assessments table */}
       <div className="assess-table-card">
-        <table className="assess-table">
-          <thead>
-            <tr>
-              <th>Assessment</th>
-              <th>Topic</th>
-              <th>Questions</th>
-              <th>Max Marks</th>
-              <th>Submissions</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {visible.map(a => (
-              <tr key={a.id}>
-                <td>
-                  <div className="assess-row-title">{a.title}</div>
-                  <div className="assess-row-id">{a.id}</div>
-                </td>
-                <td className="assess-row-topic">{a.topic}</td>
-                <td className="assess-row-num">{a.questions}</td>
-                <td className="assess-row-num">{a.maxMarks}</td>
-                <td className="assess-row-num">{a.submissions}</td>
-                <td>
-                  <span className={`assess-badge ${statusClass(a.status)}`}>{a.status}</span>
-                </td>
-                <td>
-                  <div className="assess-row-actions">
-                    <button className="assess-action-btn">Edit</button>
-                    {a.status === 'Active' && (
-                      <button
-                        className="assess-action-btn assess-action-grade"
-                        onClick={() => onNavigate('grading')}
-                      >
-                        Grade
-                      </button>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
-            {visible.length === 0 && (
+        {fetchError ? (
+          <div className="assess-empty" style={{ color: '#c33' }}>{fetchError}</div>
+        ) : (
+          <table className="assess-table">
+            <thead>
               <tr>
-                <td colSpan={7} className="assess-empty">
-                  No {activeFilter.toLowerCase()} assessments.
-                </td>
+                <th>Assessment</th>
+                <th>Topic</th>
+                <th>Questions</th>
+                <th>Max Marks</th>
+                <th>Submissions</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={7} className="assess-empty">Loading assessments…</td>
+                </tr>
+              ) : visible.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="assess-empty">
+                    {activeFilter === 'All'
+                      ? 'No assessments yet. Click "+ Create Assessment" to get started.'
+                      : `No ${activeFilter.toLowerCase()} assessments.`}
+                  </td>
+                </tr>
+              ) : (
+                visible.map(a => (
+                  <tr key={a.id}>
+                    <td>
+                      <div className="assess-row-title">{a.title}</div>
+                      <div className="assess-row-id">{a.id.slice(0, 8)}…</div>
+                    </td>
+                    <td className="assess-row-topic">{a.topic || '—'}</td>
+                    <td className="assess-row-num">{a.questions}</td>
+                    <td className="assess-row-num">{a.maxMarks}</td>
+                    <td className="assess-row-num">{a.submissions}</td>
+                    <td>
+                      <span className={`assess-badge ${statusClass(a.status)}`}>{a.status}</span>
+                    </td>
+                    <td>
+                      <div className="assess-row-actions">
+                        <button className="assess-action-btn">Edit</button>
+                        {a.status === 'Active' && (
+                          <button
+                            className="assess-action-btn assess-action-grade"
+                            onClick={() => onNavigate('grading')}
+                          >
+                            Grade
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        )}
       </div>
 
       {/* Toast */}
@@ -193,7 +286,7 @@ function Assessments({ onNavigate }) {
       <aside className={`assess-panel ${panelOpen ? 'open' : ''}`}>
         <div className="assess-panel-header">
           <div className="assess-panel-title">Create Assessment</div>
-          <button className="assess-panel-close" onClick={closePanel}>&#x2715;</button>
+          <button className="assess-panel-close" onClick={closePanel} disabled={saving}>&#x2715;</button>
         </div>
 
         <form className="assess-panel-form">
@@ -309,14 +402,14 @@ function Assessments({ onNavigate }) {
           </div>
 
           <div className="assess-panel-footer">
-            <button type="button" className="assess-btn-ghost" onClick={closePanel}>
+            <button type="button" className="assess-btn-ghost" onClick={closePanel} disabled={saving}>
               Cancel
             </button>
-            <button type="button" className="assess-btn-ghost" onClick={handleSaveDraft}>
-              Save as Draft
+            <button type="button" className="assess-btn-ghost" onClick={handleSaveDraft} disabled={saving}>
+              {saving ? 'Saving…' : 'Save as Draft'}
             </button>
-            <button type="submit" className="assess-btn-primary" onClick={handlePublish}>
-              Publish
+            <button type="submit" className="assess-btn-primary" onClick={handlePublish} disabled={saving}>
+              {saving ? 'Publishing…' : 'Publish'}
             </button>
           </div>
         </form>
