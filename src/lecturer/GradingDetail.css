@@ -540,6 +540,66 @@
   font-family: inherit;
 }
 
+/* ========== PENDING BADGE ========== */
+.gd-badge-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* ========== REFERENCE ANSWER ========== */
+.gd-sample-answer-box {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: #f5f7fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+}
+
+.gd-sample-answer-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #999;
+  margin-bottom: 6px;
+}
+
+.gd-sample-answer-text {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ========== AWARDED MARKS BADGE ========== */
+.gd-awarded-badge {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 4px 10px;
+  background: #d1fae5;
+  color: #065f46;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ========== TOAST ========== */
+.gd-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a1a;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 200;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+
 /* ========== RESPONSIVE ========== */
 @media (max-width: 1100px) {
   .gd-main {
