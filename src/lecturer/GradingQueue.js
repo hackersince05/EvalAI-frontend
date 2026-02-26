@@ -1,59 +1,120 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '../supabaseClient';
+import { useUser } from '../UserContext';
 import './GradingQueue.css';
 
-// ── Mock data ──────────────────────────────────────────────────────────────
-const SUBMISSIONS = [
-  { id: 88201, student: 'Alex Chen',  initials: 'AC', color: '#667eea', assessment: 'CS-401 Midterm',    question: 'P vs NP Problem',         score: 0.89, confidence: 'High',   status: 'Auto-graded', date: 'Oct 14, 2024' },
-  { id: 88202, student: 'Jamie Lee',  initials: 'JL', color: '#f59e0b', assessment: 'CS-401 Midterm',    question: 'Turing Machines',           score: 0.71, confidence: 'Medium', status: 'Needs Review', date: 'Oct 14, 2024' },
-  { id: 88203, student: 'Sam Osei',   initials: 'SO', color: '#ef4444', assessment: 'CS-301 Quiz 2',     question: 'Binary Search Trees',       score: 0.55, confidence: 'Low',    status: 'Needs Review', date: 'Oct 13, 2024' },
-  { id: 88204, student: 'Priya Nair', initials: 'PN', color: '#10b981', assessment: 'CS-401 Midterm',    question: 'Context-Free Grammars',     score: 0.93, confidence: 'High',   status: 'Auto-graded', date: 'Oct 14, 2024' },
-  { id: 88205, student: 'Tom Blake',  initials: 'TB', color: '#764ba2', assessment: 'CS-501 Assignment', question: 'Neural Network Basics',     score: 0.82, confidence: 'High',   status: 'Auto-graded', date: 'Oct 12, 2024' },
-  { id: 88206, student: 'Mei Zhang',  initials: 'MZ', color: '#3b82f6', assessment: 'CS-301 Quiz 2',     question: 'Hash Table Collisions',     score: 0.68, confidence: 'Medium', status: 'Needs Review', date: 'Oct 13, 2024' },
-  { id: 88207, student: 'Luis Vega',  initials: 'LV', color: '#6366f1', assessment: 'CS-401 Midterm',    question: 'Pumping Lemma',             score: 0.77, confidence: 'Medium', status: 'Auto-graded', date: 'Oct 14, 2024' },
-  { id: 88208, student: 'Sara Kim',   initials: 'SK', color: '#0ea5e9', assessment: 'CS-501 Assignment', question: 'Gradient Descent',          score: 0.91, confidence: 'High',   status: 'Approved',    date: 'Oct 11, 2024' },
-];
-
 const FILTERS = [
-  { key: 'All',          label: 'All' },
-  { key: 'Needs Review', label: 'Needs Review' },
-  { key: 'Auto-graded',  label: 'Auto-graded' },
-  { key: 'Approved',     label: 'Approved' },
+  { key: 'All',            label: 'All'            },
+  { key: 'Pending Review', label: 'Pending Review' },
+  { key: 'Graded',         label: 'Graded'         },
 ];
 
 // ── Helpers ────────────────────────────────────────────────────────────────
-function scoreClass(s) {
-  if (s >= 0.85) return 'gq-score-high';
-  if (s >= 0.65) return 'gq-score-mid';
-  return 'gq-score-low';
-}
-
 function statusClass(s) {
   return {
-    'Auto-graded':  'gq-chip-ai',
-    'Needs Review': 'gq-chip-review',
-    'Approved':     'gq-chip-approved',
+    'Pending Review': 'gq-chip-review',
+    'Graded':         'gq-chip-approved',
   }[s] ?? '';
 }
 
-function confidenceClass(c) {
-  return { High: 'gq-conf-high', Medium: 'gq-conf-mid', Low: 'gq-conf-low' }[c] ?? '';
+// Generate a stable avatar colour from a name string
+function avatarColor(str) {
+  const palette = ['#667eea', '#f59e0b', '#ef4444', '#10b981', '#764ba2', '#3b82f6', '#6366f1', '#0ea5e9'];
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  return palette[Math.abs(hash) % palette.length];
+}
+
+function initials(name) {
+  return name.split(' ').map(w => w[0] ?? '').join('').toUpperCase().slice(0, 2);
 }
 
 // ── Component ──────────────────────────────────────────────────────────────
 function GradingQueue({ onNavigate }) {
+  const { user } = useUser();
+
+  const [submissions,  setSubmissions]  = useState([]);
+  const [loading,      setLoading]      = useState(true);
   const [activeFilter, setActiveFilter] = useState('All');
 
+  // ── Fetch all submissions for the lecturer's assessments ──────────────────
+  const fetchSubmissions = useCallback(async () => {
+    setLoading(true);
+
+    // Step 1: get the IDs of assessments this lecturer created
+    const { data: myAssessments, error: aErr } = await supabase
+      .from('assessments')
+      .select('id')
+      .eq('created_by', user.id);
+
+    if (aErr || !myAssessments || myAssessments.length === 0) {
+      setSubmissions([]);
+      setLoading(false);
+      return;
+    }
+
+    const assessmentIds = myAssessments.map(a => a.id);
+
+    // Step 2: get submissions for those assessments, with assessment title
+    const { data: subs, error: sErr } = await supabase
+      .from('submissions')
+      .select('id, submitted_at, status, assessment_id, student_id, assessments ( title )')
+      .in('assessment_id', assessmentIds)
+      .order('submitted_at', { ascending: false });
+
+    if (sErr || !subs) {
+      setSubmissions([]);
+      setLoading(false);
+      return;
+    }
+
+    // Step 3: get student names from profiles
+    const studentIds = [...new Set(subs.map(s => s.student_id))];
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('id, full_name')
+      .in('id', studentIds);
+
+    const profileMap = Object.fromEntries((profiles ?? []).map(p => [p.id, p.full_name]));
+
+    setSubmissions(
+      subs.map(s => {
+        const name = profileMap[s.student_id] ?? 'Unknown Student';
+        return {
+          id:              s.id,
+          studentName:     name,
+          initials:        initials(name),
+          color:           avatarColor(name),
+          assessmentTitle: s.assessments?.title ?? '—',
+          assessmentId:    s.assessment_id,
+          studentId:       s.student_id,
+          status:          s.status,
+          submittedAt:     s.submitted_at,
+          date:            new Date(s.submitted_at).toLocaleDateString('en-GB', {
+            day: 'numeric', month: 'short', year: 'numeric',
+          }),
+        };
+      })
+    );
+    setLoading(false);
+  }, [user.id]);
+
+  useEffect(() => { fetchSubmissions(); }, [fetchSubmissions]);
+
+  // ── Derived values ────────────────────────────────────────────────────────
   const visible = activeFilter === 'All'
-    ? SUBMISSIONS
-    : SUBMISSIONS.filter(s => s.status === activeFilter);
+    ? submissions
+    : submissions.filter(s => s.status === activeFilter);
 
   const counts = FILTERS.reduce((acc, f) => {
-    acc[f.key] = f.key === 'All' ? SUBMISSIONS.length : SUBMISSIONS.filter(s => s.status === f.key).length;
+    acc[f.key] = f.key === 'All'
+      ? submissions.length
+      : submissions.filter(s => s.status === f.key).length;
     return acc;
   }, {});
 
-  const reviewed  = SUBMISSIONS.filter(s => s.status === 'Approved').length;
-  const total     = SUBMISSIONS.length;
+  const graded = submissions.filter(s => s.status === 'Graded').length;
+  const total  = submissions.length;
 
   return (
     <div className="gq-page">
@@ -63,21 +124,24 @@ function GradingQueue({ onNavigate }) {
         <div>
           <div className="gq-topbar-title">Grading Queue</div>
           <div className="gq-topbar-sub">
-            {reviewed} of {total} reviewed
-            <span className="gq-progress-inline">
-              <span
-                className="gq-progress-inline-fill"
-                style={{ width: `${Math.round((reviewed / total) * 100)}%` }}
-              />
-            </span>
+            {loading ? 'Loading…' : (
+              <>
+                {graded} of {total} graded
+                {total > 0 && (
+                  <span className="gq-progress-inline">
+                    <span
+                      className="gq-progress-inline-fill"
+                      style={{ width: `${Math.round((graded / total) * 100)}%` }}
+                    />
+                  </span>
+                )}
+              </>
+            )}
           </div>
         </div>
-        <button className="gq-btn-outline">
-          Bulk Approve High Confidence
-        </button>
       </div>
 
-      {/* Filter chips */}
+      {/* Filter tabs */}
       <div className="gq-filter-row">
         {FILTERS.map(f => (
           <button
@@ -96,71 +160,63 @@ function GradingQueue({ onNavigate }) {
         <table className="gq-table">
           <thead>
             <tr>
-              <th>#ID</th>
               <th>Student</th>
               <th>Assessment</th>
-              <th>SBERT Score</th>
-              <th>Confidence</th>
               <th>Status</th>
               <th>Date</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {visible.map(sub => (
-              <tr
-                key={sub.id}
-                className="gq-row"
-                onClick={() => onNavigate('grading-detail', sub)}
-              >
-                <td className="gq-cell-id">#{sub.id}</td>
-                <td>
-                  <div className="gq-student">
-                    <div className="gq-avatar" style={{ background: sub.color }}>
-                      {sub.initials}
-                    </div>
-                    <div>
-                      <div className="gq-student-name">{sub.student}</div>
-                      <div className="gq-student-q">{sub.question}</div>
-                    </div>
-                  </div>
-                </td>
-                <td className="gq-cell-assess">{sub.assessment}</td>
-                <td>
-                  <div className={`gq-score ${scoreClass(sub.score)}`}>
-                    {sub.score.toFixed(2)}
-                  </div>
-                  <div className="gq-score-bar-track">
-                    <div
-                      className="gq-score-bar-fill"
-                      style={{ width: `${sub.score * 100}%`, background: sub.score >= 0.85 ? '#10b981' : sub.score >= 0.65 ? '#f59e0b' : '#ef4444' }}
-                    />
-                  </div>
-                </td>
-                <td>
-                  <span className={`gq-conf-badge ${confidenceClass(sub.confidence)}`}>
-                    {sub.confidence}
-                  </span>
-                </td>
-                <td>
-                  <span className={`gq-status-chip ${statusClass(sub.status)}`}>
-                    {sub.status}
-                  </span>
-                </td>
-                <td className="gq-cell-date">{sub.date}</td>
-                <td>
-                  <button
-                    className="gq-review-btn"
-                    onClick={(e) => { e.stopPropagation(); onNavigate('grading-detail', sub); }}
-                  >
-                    Review
-                  </button>
+            {loading ? (
+              <tr>
+                <td colSpan={5} className="gq-empty">Loading submissions…</td>
+              </tr>
+            ) : visible.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="gq-empty">
+                  {activeFilter === 'All'
+                    ? 'No submissions yet.'
+                    : `No ${activeFilter.toLowerCase()} submissions.`}
                 </td>
               </tr>
-            ))}
+            ) : (
+              visible.map(sub => (
+                <tr
+                  key={sub.id}
+                  className="gq-row"
+                  onClick={() => onNavigate('grading-detail', sub)}
+                >
+                  <td>
+                    <div className="gq-student">
+                      <div className="gq-avatar" style={{ background: sub.color }}>
+                        {sub.initials}
+                      </div>
+                      <div className="gq-student-name">{sub.studentName}</div>
+                    </div>
+                  </td>
+                  <td className="gq-cell-assess">{sub.assessmentTitle}</td>
+                  <td>
+                    <span className={`gq-status-chip ${statusClass(sub.status)}`}>
+                      {sub.status}
+                    </span>
+                  </td>
+                  <td className="gq-cell-date">{sub.date}</td>
+                  <td>
+                    <button
+                      className="gq-review-btn"
+                      onClick={(e) => { e.stopPropagation(); onNavigate('grading-detail', sub); }}
+                    >
+                      Review
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
+
     </div>
   );
 }
