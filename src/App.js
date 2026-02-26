@@ -27,8 +27,11 @@ import Rubrics from './lecturer/Rubrics';             // Rubric builder and mana
 import Analytics from './lecturer/Analytics';         // Class performance analytics
 
 // Student page components
+import StudentDashboard    from './student/Dashboard';           // Student overview / home
+import StudentAssessments  from './student/StudentAssessments';  // Available + completed assessments
+import StudentAnalytics    from './student/Analytics';           // Student analytics (placeholder)
 import TakeTest from './student/TakeTest'; // Test-taking interface for students
-import Results from './student/Results';   // Student's past test results
+import Results  from './student/Results';  // Student's past test results
 
 import './App.css';
 
@@ -38,13 +41,13 @@ const AUTHENTICATED_PAGES = [
   // Lecturer routes
   'dashboard', 'assessments', 'grading', 'grading-detail', 'rubrics', 'analytics', 'settings',
   // Student routes
-  'take-test', 'results',
+  'student-dashboard', 'student-assessments', 'student-analytics', 'take-test', 'results',
 ];
 
 // The first page each role lands on immediately after login
 const ROLE_HOME = {
   lecturer: 'dashboard',
-  student:  'take-test',
+  student:  'student-dashboard',
 };
 
 function App() {
@@ -175,8 +178,11 @@ function App() {
       case 'analytics':   return <Analytics     onNavigate={handleNavigate} />;
 
       // --- Student routes ---
-      case 'take-test':   return <TakeTest  onNavigate={handleNavigate} />;
-      case 'results':     return <Results   onNavigate={handleNavigate} />;
+      case 'student-dashboard':   return <StudentDashboard   onNavigate={handleNavigate} />;
+      case 'student-assessments': return <StudentAssessments onNavigate={handleNavigate} />;
+      case 'student-analytics':   return <StudentAnalytics   onNavigate={handleNavigate} />;
+      case 'take-test':           return <TakeTest           onNavigate={handleNavigate} />;
+      case 'results':             return <Results            onNavigate={handleNavigate} />;
 
       default:            return <DashboardPage onNavigate={handleNavigate} />;
     }
