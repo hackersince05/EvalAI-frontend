@@ -23,6 +23,13 @@ function statusClass(s) {
   return { Active: 'assess-badge-active', Draft: 'assess-badge-draft', Closed: 'assess-badge-closed' }[s] ?? '';
 }
 
+// Generates a random XXXX-XXXX access code — avoids visually confusable chars
+function generateAccessCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const part  = (n) => Array.from({ length: n }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  return `${part(4)}-${part(4)}`;
+}
+
 // ── Component ──────────────────────────────────────────────────────────────
 function Assessments({ onNavigate }) {
   const { user } = useUser();
@@ -32,10 +39,11 @@ function Assessments({ onNavigate }) {
   const [fetchError,   setFetchError]   = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
   const [panelOpen,    setPanelOpen]    = useState(false);
-  const [editingId,    setEditingId]    = useState(null);   // null = create, UUID = edit
+  const [editingId,    setEditingId]    = useState(null);
   const [form,         setForm]         = useState(BLANK_FORM);
   const [saving,       setSaving]       = useState(false);
   const [toast,        setToast]        = useState('');
+  const [copiedId,     setCopiedId]     = useState(null); // tracks which row's code was just copied
 
   // ── Fetch list ────────────────────────────────────────────────────────────
   const fetchAssessments = useCallback(async () => {
@@ -49,6 +57,7 @@ function Assessments({ onNavigate }) {
         title,
         topic,
         status,
+        access_code,
         created_at,
         questions ( id, marks )
       `)
@@ -66,9 +75,10 @@ function Assessments({ onNavigate }) {
       title:       a.title,
       topic:       a.topic,
       status:      a.status,
+      accessCode:  a.access_code,
       questions:   a.questions.length,
       maxMarks:    a.questions.reduce((sum, q) => sum + (q.marks || 0), 0),
-      submissions: 0,   // placeholder until submissions table exists
+      submissions: 0,
     })));
     setLoading(false);
   }, [user.id]);
@@ -86,6 +96,14 @@ function Assessments({ onNavigate }) {
   }, {});
 
   const totalMarks = form.questions.reduce((sum, q) => sum + (parseInt(q.marks, 10) || 0), 0);
+
+  // ── Copy code to clipboard ────────────────────────────────────────────────
+  const copyCode = (id, code) => {
+    navigator.clipboard.writeText(code).then(() => {
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    });
+  };
 
   // ── Form field helpers ────────────────────────────────────────────────────
   const setTopField = (key) => (e) => setForm(prev => ({ ...prev, [key]: e.target.value }));
@@ -107,7 +125,6 @@ function Assessments({ onNavigate }) {
     setPanelOpen(true);
   };
 
-  // Fetch full question detail for the chosen draft and open the panel pre-filled
   const openEditPanel = async (a) => {
     setEditingId(a.id);
     setForm({ title: a.title, topic: a.topic || '', questions: [] });
@@ -135,7 +152,7 @@ function Assessments({ onNavigate }) {
             answerLength: q.answer_length,
             sampleAnswer: q.sample_answer || '',
           }))
-        : [{ ...BLANK_QUESTION }],   // safety fallback for drafts with no questions yet
+        : [{ ...BLANK_QUESTION }],
     }));
   };
 
@@ -158,13 +175,16 @@ function Assessments({ onNavigate }) {
 
       if (editingId) {
         // ── UPDATE path ──
+        const updateData = { title: form.title, topic: form.topic, status };
+        // Generate a fresh code when publishing a draft for the first time
+        if (status === 'Active') updateData.access_code = generateAccessCode();
+
         const { error: aErr } = await supabase
           .from('assessments')
-          .update({ title: form.title, topic: form.topic, status })
+          .update(updateData)
           .eq('id', editingId);
         if (aErr) throw aErr;
 
-        // Replace questions by deleting the old set and re-inserting
         const { error: dErr } = await supabase
           .from('questions')
           .delete()
@@ -174,16 +194,18 @@ function Assessments({ onNavigate }) {
         assessmentId = editingId;
       } else {
         // ── INSERT path ──
+        const insertData = { title: form.title, topic: form.topic, status, created_by: user.id };
+        if (status === 'Active') insertData.access_code = generateAccessCode();
+
         const { data: assessment, error: aErr } = await supabase
           .from('assessments')
-          .insert({ title: form.title, topic: form.topic, status, created_by: user.id })
+          .insert(insertData)
           .select()
           .single();
         if (aErr) throw aErr;
         assessmentId = assessment.id;
       }
 
-      // Insert all questions (both paths)
       const { error: qErr } = await supabase
         .from('questions')
         .insert(
@@ -290,7 +312,19 @@ function Assessments({ onNavigate }) {
                   <tr key={a.id}>
                     <td>
                       <div className="assess-row-title">{a.title}</div>
-                      <div className="assess-row-id">{a.id.slice(0, 8)}…</div>
+                      {/* Show the access code chip on Active assessments */}
+                      {a.status === 'Active' && a.accessCode && (
+                        <div className="assess-row-code">
+                          <span className="assess-code-value">{a.accessCode}</span>
+                          <button
+                            className="assess-code-copy"
+                            onClick={() => copyCode(a.id, a.accessCode)}
+                            title="Copy access code"
+                          >
+                            {copiedId === a.id ? '✓ Copied' : 'Copy'}
+                          </button>
+                        </div>
+                      )}
                     </td>
                     <td className="assess-row-topic">{a.topic || '—'}</td>
                     <td className="assess-row-num">{a.questions}</td>
@@ -301,12 +335,8 @@ function Assessments({ onNavigate }) {
                     </td>
                     <td>
                       <div className="assess-row-actions">
-                        {/* Edit is only available for Draft assessments */}
                         {a.status === 'Draft' && (
-                          <button
-                            className="assess-action-btn"
-                            onClick={() => openEditPanel(a)}
-                          >
+                          <button className="assess-action-btn" onClick={() => openEditPanel(a)}>
                             Edit
                           </button>
                         )}
@@ -334,7 +364,7 @@ function Assessments({ onNavigate }) {
       {/* Backdrop */}
       {panelOpen && <div className="assess-backdrop" onClick={closePanel} />}
 
-      {/* Slide-out panel — shared by create and edit */}
+      {/* Slide-out panel */}
       <aside className={`assess-panel ${panelOpen ? 'open' : ''}`}>
         <div className="assess-panel-header">
           <div className="assess-panel-title">
@@ -368,7 +398,6 @@ function Assessments({ onNavigate }) {
             />
           </div>
 
-          {/* Questions section */}
           <div className="assess-q-section">
             <div className="assess-q-section-header">
               <span>Questions ({form.questions.length})</span>
