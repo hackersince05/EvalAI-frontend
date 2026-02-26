@@ -195,7 +195,10 @@ function StudentAssessments({ onNavigate }) {
                 </div>
                 <div className="stu-assess-card-right">
                   <span className="stu-badge stu-badge-active">Active</span>
-                  <button className="stu-btn-primary" onClick={() => onNavigate('take-test')}>
+                  <button
+                    className="stu-btn-primary"
+                    onClick={() => onNavigate('take-test', { id: a.id, title: a.title, topic: a.topic })}
+                  >
                     Start →
                   </button>
                 </div>

@@ -15,6 +15,7 @@ const LECTURER_NAV = [
 const STUDENT_NAV = [
   { key: 'student-dashboard',   label: 'Dashboard'    },
   { key: 'student-assessments', label: 'Assessments'  },
+  { key: 'results',             label: 'My Results'   },
   { key: 'student-analytics',   label: 'Analytics'    },
 ];
 
