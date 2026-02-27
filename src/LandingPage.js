@@ -77,7 +77,7 @@ function LandingPage({ onNavigate }) {
 
           {/* Lecturer Card */}
           <div className="role-card lecturer-card">
-            <img src="/lecturericon.png" alt="Lecturer" className="role-icon" />
+            <img src="/lecturericon.jpg" alt="Lecturer" className="role-icon" />
             <h2 className="role-title">I am a Lecturer</h2>
             <p className="role-description">
               Role-aware dashboard for question design, grading, and analytics.
