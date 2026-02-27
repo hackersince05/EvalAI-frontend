@@ -11,12 +11,9 @@ function CircularProgress({ value, max, size = 104, strokeWidth = 9 }) {
   const color         = pct >= 0.75 ? '#10b981' : pct >= 0.5 ? '#f59e0b' : '#ef4444';
 
   return (
-    // Rotate so the arc starts at 12 o'clock instead of 3 o'clock
     <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-      {/* Track */}
       <circle cx={size / 2} cy={size / 2} r={radius}
         fill="none" stroke="#e0e0e0" strokeWidth={strokeWidth} />
-      {/* Progress arc */}
       <circle cx={size / 2} cy={size / 2} r={radius}
         fill="none"
         stroke={color}
@@ -46,12 +43,14 @@ function wordCount(text) {
 // ── Component ──────────────────────────────────────────────────────────────
 function GradingDetail({ submission, onNavigate }) {
   const [answers,      setAnswers]      = useState([]);
-  const [overrides,    setOverrides]    = useState({});  // { [answerId]: string }
+  const [overrides,    setOverrides]    = useState({});
   const [loading,      setLoading]      = useState(true);
   const [saving,       setSaving]       = useState(false);
   const [overrideMode, setOverrideMode] = useState(false);
   const [toast,        setToast]        = useState('');
   const [status,       setStatus]       = useState(submission?.status ?? '');
+  const [aiScoring,    setAiScoring]    = useState(false);  // edge function in-flight
+  const [gradingMode,  setGradingMode]  = useState(null);  // 'auto' | 'manual' | null
 
   // ── Fetch answers (with question details) for this submission ─────────────
   const fetchAnswers = useCallback(async () => {
@@ -74,7 +73,6 @@ function GradingDetail({ submission, onNavigate }) {
       return;
     }
 
-    // Sort by the question's original order_index
     const sorted = [...data].sort(
       (a, b) => (a.questions?.order_index ?? 0) - (b.questions?.order_index ?? 0)
     );
@@ -93,13 +91,51 @@ function GradingDetail({ submission, onNavigate }) {
   useEffect(() => {
     fetchAnswers();
     setStatus(submission?.status ?? '');
+    // Reset AI / grading state when submission changes
+    setOverrideMode(false);
+    setGradingMode(null);
   }, [fetchAnswers, submission]);
+
+  // ── Run AI grading via Supabase Edge Function ──────────────────────────────
+  const handleRunAI = async () => {
+    setAiScoring(true);
+    try {
+      const { error } = await supabase.functions.invoke('grade-submission', {
+        body: { submission_id: submission.id },
+      });
+      if (error) throw error;
+      await fetchAnswers(); // pull fresh ai_score values into state
+      showToast('AI grading complete.');
+    } catch (err) {
+      showToast('AI grading failed. Please try again.');
+      console.error(err);
+    } finally {
+      setAiScoring(false);
+    }
+  };
+
+  // ── Enter grading mode ────────────────────────────────────────────────────
+  // 'auto'  → pre-fill inputs with Math.round(ai_score × max_marks)
+  // 'manual' → keep existing overrides (marks_awarded or blank)
+  const handleChooseMode = (mode) => {
+    setGradingMode(mode);
+    setOverrideMode(true);
+    if (mode === 'auto') {
+      const init = {};
+      answers.forEach(a => {
+        const suggested = a.ai_score !== null
+          ? Math.round(a.ai_score * (a.questions?.marks ?? 0))
+          : (a.marks_awarded !== null ? a.marks_awarded : 0);
+        init[a.id] = String(suggested);
+      });
+      setOverrides(init);
+    }
+  };
 
   // ── Save grades to DB ─────────────────────────────────────────────────────
   const handleSaveGrades = async () => {
     setSaving(true);
     try {
-      // Update marks_awarded for each answer that has a value
       for (const answer of answers) {
         const val = parseInt(overrides[answer.id], 10);
         if (!isNaN(val)) {
@@ -111,7 +147,6 @@ function GradingDetail({ submission, onNavigate }) {
         }
       }
 
-      // Mark submission as Graded
       const { error: sErr } = await supabase
         .from('submissions')
         .update({ status: 'Graded' })
@@ -120,8 +155,9 @@ function GradingDetail({ submission, onNavigate }) {
 
       setStatus('Graded');
       setOverrideMode(false);
+      setGradingMode(null);
       showToast('Grades saved successfully.');
-      await fetchAnswers(); // refresh marks_awarded in state
+      await fetchAnswers();
     } catch (err) {
       showToast('Failed to save grades. Please try again.');
       console.error(err);
@@ -153,6 +189,7 @@ function GradingDetail({ submission, onNavigate }) {
   const pct          = status === 'Graded' && totalMarks > 0
     ? Math.round((awardedMarks / totalMarks) * 100)
     : null;
+  const hasAiScores  = answers.some(a => a.ai_score !== null);
 
   return (
     <div className="gd-page">
@@ -169,13 +206,11 @@ function GradingDetail({ submission, onNavigate }) {
           <span className="gd-crumb-current">{submission.studentName}</span>
         </nav>
         <div className="gd-topbar-actions">
-          {!overrideMode && status !== 'Graded' && (
-            <button className="gd-btn-primary" onClick={() => setOverrideMode(true)}>
-              Grade Submission
-            </button>
-          )}
           {!overrideMode && status === 'Graded' && (
-            <button className="gd-btn-ghost" onClick={() => setOverrideMode(true)}>
+            <button
+              className="gd-btn-ghost"
+              onClick={() => { setGradingMode('manual'); setOverrideMode(true); }}
+            >
               Edit Grades
             </button>
           )}
@@ -268,7 +303,6 @@ function GradingDetail({ submission, onNavigate }) {
                       </div>
                       <p className="gd-prompt-text">{a.questions?.text ?? '—'}</p>
 
-                      {/* Reference answer */}
                       {a.questions?.sample_answer && (
                         <div className="gd-sample-answer-box">
                           <div className="gd-sample-answer-label">Reference Answer</div>
@@ -281,9 +315,16 @@ function GradingDetail({ submission, onNavigate }) {
                     <div className="gd-section-card">
                       <div className="gd-section-header">
                         <span className="gd-section-label">Student Answer</span>
-                        <span className="gd-word-count">
-                          Word count: {wordCount(a.answer_text)}
-                        </span>
+                        <div className="gd-section-header-right">
+                          {a.ai_score !== null && (
+                            <span className="gd-ai-similarity-badge">
+                              AI similarity: {Math.round(a.ai_score * 100)}%
+                            </span>
+                          )}
+                          <span className="gd-word-count">
+                            {wordCount(a.answer_text)} words
+                          </span>
+                        </div>
                       </div>
                       <div className="gd-answer-box">
                         {a.answer_text
@@ -346,28 +387,97 @@ function GradingDetail({ submission, onNavigate }) {
                 ))}
               </div>
 
-              {/* Manual grading */}
+              {/* Grading panel */}
               <div className="gd-side-card">
-                <h3 className="gd-override-title">Manual Grading</h3>
+                <h3 className="gd-override-title">Grading</h3>
+
                 {!overrideMode ? (
                   <>
-                    <p className="gd-override-desc">
-                      {status === 'Graded'
-                        ? 'Grades have been saved. Click "Edit Grades" in the toolbar to make changes.'
-                        : 'Review the answers and enter marks for each question.'}
-                    </p>
-                    {status !== 'Graded' && (
-                      <button className="gd-btn-override" onClick={() => setOverrideMode(true)}>
-                        Enter Grades
-                      </button>
+                    {/* Already graded */}
+                    {status === 'Graded' && (
+                      <p className="gd-override-desc">
+                        Grades have been saved. Click "Edit Grades" in the toolbar to make changes.
+                      </p>
+                    )}
+
+                    {/* AI scoring in progress */}
+                    {status !== 'Graded' && aiScoring && (
+                      <div className="gd-ai-loading">
+                        <div className="gd-ai-spinner" />
+                        <p className="gd-override-desc">Running AI grading…</p>
+                      </div>
+                    )}
+
+                    {/* AI scores ready — choose mode */}
+                    {status !== 'Graded' && !aiScoring && hasAiScores && (
+                      <>
+                        <p className="gd-override-desc">
+                          AI scores are ready. Choose how to finalise marks.
+                        </p>
+                        <button
+                          className="gd-btn-mode gd-btn-mode-auto"
+                          onClick={() => handleChooseMode('auto')}
+                        >
+                          <span className="gd-btn-mode-title">Auto Grade</span>
+                          <span className="gd-btn-mode-sub">Pre-fill marks from AI scores</span>
+                        </button>
+                        <button
+                          className="gd-btn-mode gd-btn-mode-manual"
+                          onClick={() => handleChooseMode('manual')}
+                        >
+                          <span className="gd-btn-mode-title">Grade Manually</span>
+                          <span className="gd-btn-mode-sub">Enter marks yourself</span>
+                        </button>
+                        <button
+                          className="gd-btn-ai-rerun"
+                          onClick={handleRunAI}
+                          disabled={aiScoring}
+                        >
+                          Re-run AI Grading
+                        </button>
+                      </>
+                    )}
+
+                    {/* No AI scores yet */}
+                    {status !== 'Graded' && !aiScoring && !hasAiScores && (
+                      <>
+                        <p className="gd-override-desc">
+                          Use AI to suggest marks based on semantic similarity to the reference answer, or grade manually.
+                        </p>
+                        <button
+                          className="gd-btn-ai"
+                          onClick={handleRunAI}
+                          disabled={aiScoring}
+                        >
+                          Run AI Grading
+                        </button>
+                        <button
+                          className="gd-btn-override"
+                          onClick={() => handleChooseMode('manual')}
+                        >
+                          Grade Manually
+                        </button>
+                      </>
                     )}
                   </>
                 ) : (
+                  /* ── Override inputs ── */
                   <>
-                    <p className="gd-override-desc">Enter marks for each question below.</p>
+                    <p className="gd-override-desc">
+                      {gradingMode === 'auto'
+                        ? 'AI-suggested marks pre-filled. Adjust if needed.'
+                        : 'Enter marks for each question below.'}
+                    </p>
                     {answers.map((a, idx) => (
                       <div key={a.id} className="gd-override-row">
-                        <label className="gd-override-field-label">Q{idx + 1}</label>
+                        <div className="gd-override-field-label">
+                          <span>Q{idx + 1}</span>
+                          {a.ai_score !== null && (
+                            <span className="gd-ai-hint">
+                              AI: {Math.round(a.ai_score * (a.questions?.marks ?? 0))}/{a.questions?.marks ?? 0}
+                            </span>
+                          )}
+                        </div>
                         <input
                           className="gd-override-input"
                           type="number"
@@ -384,7 +494,7 @@ function GradingDetail({ submission, onNavigate }) {
                     <div className="gd-override-actions">
                       <button
                         className="gd-btn-ghost-sm"
-                        onClick={() => setOverrideMode(false)}
+                        onClick={() => { setOverrideMode(false); setGradingMode(null); }}
                         disabled={saving}
                       >
                         Cancel
