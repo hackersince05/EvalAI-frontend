@@ -377,27 +377,39 @@
   margin-bottom: 12px;
 }
 
-.gd-score-circle {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  border: 6px solid #1a1a1a;
+.gd-score-ring {
+  position: relative;
+  width: 104px;
+  height: 104px;
+}
+
+.gd-score-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: baseline;
-  justify-content: center;
-  gap: 2px;
+  gap: 1px;
+  white-space: nowrap;
 }
 
 .gd-score-num {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   color: #1a1a1a;
   line-height: 1;
 }
 
 .gd-score-denom {
-  font-size: 14px;
+  font-size: 13px;
   color: #999;
+}
+
+.gd-score-pending {
+  font-size: 20px;
+  font-weight: 600;
+  color: #bbb;
 }
 
 .gd-grade-label {
