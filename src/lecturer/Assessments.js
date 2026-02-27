@@ -41,9 +41,11 @@ function Assessments({ onNavigate }) {
   const [panelOpen,    setPanelOpen]    = useState(false);
   const [editingId,    setEditingId]    = useState(null);
   const [form,         setForm]         = useState(BLANK_FORM);
-  const [saving,       setSaving]       = useState(false);
-  const [toast,        setToast]        = useState('');
-  const [copiedId,     setCopiedId]     = useState(null); // tracks which row's code was just copied
+  const [saving,          setSaving]          = useState(false);
+  const [toast,           setToast]           = useState('');
+  const [copiedId,        setCopiedId]        = useState(null); // tracks which row's code was just copied
+  const [mutating,        setMutating]        = useState(false); // close / reopen / delete in progress
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);  // row awaiting delete confirmation
 
   // ── Fetch list ────────────────────────────────────────────────────────────
   const fetchAssessments = useCallback(async () => {
@@ -247,6 +249,62 @@ function Assessments({ onNavigate }) {
     saveAssessment('Active');
   };
 
+  // ── Close / Reopen ────────────────────────────────────────────────────────
+  const handleClose = async (id) => {
+    setMutating(true);
+    const { error } = await supabase
+      .from('assessments')
+      .update({ status: 'Closed' })
+      .eq('id', id);
+    if (error) showToast('Failed to close assessment.');
+    else { showToast('Assessment closed.'); fetchAssessments(); }
+    setMutating(false);
+  };
+
+  const handleReopen = async (id) => {
+    setMutating(true);
+    const { error } = await supabase
+      .from('assessments')
+      .update({ status: 'Active' })
+      .eq('id', id);
+    if (error) showToast('Failed to reopen assessment.');
+    else { showToast('Assessment reopened.'); fetchAssessments(); }
+    setMutating(false);
+  };
+
+  // ── Delete (cascading) ────────────────────────────────────────────────────
+  const handleDelete = async (id) => {
+    setMutating(true);
+    try {
+      // Fetch any submissions so we can delete their answers first
+      const { data: subs } = await supabase
+        .from('submissions')
+        .select('id')
+        .eq('assessment_id', id);
+
+      if (subs && subs.length > 0) {
+        const subIds = subs.map(s => s.id);
+        await supabase.from('answers').delete().in('submission_id', subIds);
+        await supabase.from('submissions').delete().eq('assessment_id', id);
+      }
+
+      await supabase.from('student_assessments').delete().eq('assessment_id', id);
+      await supabase.from('questions').delete().eq('assessment_id', id);
+
+      const { error } = await supabase.from('assessments').delete().eq('id', id);
+      if (error) throw error;
+
+      setConfirmDeleteId(null);
+      showToast('Assessment deleted.');
+      fetchAssessments();
+    } catch (err) {
+      showToast('Failed to delete assessment. Please try again.');
+      console.error(err);
+    } finally {
+      setMutating(false);
+    }
+  };
+
   return (
     <div className="assess-page">
 
@@ -335,6 +393,8 @@ function Assessments({ onNavigate }) {
                     </td>
                     <td>
                       <div className="assess-row-actions">
+
+                        {/* ── Status-specific primary action ── */}
                         {a.status === 'Draft' && (
                           <button className="assess-action-btn" onClick={() => openEditPanel(a)}>
                             Edit
@@ -348,6 +408,55 @@ function Assessments({ onNavigate }) {
                             Grade
                           </button>
                         )}
+                        {a.status === 'Closed' && (
+                          <button
+                            className="assess-action-btn assess-action-reopen"
+                            onClick={() => handleReopen(a.id)}
+                            disabled={mutating}
+                          >
+                            Reopen
+                          </button>
+                        )}
+
+                        {/* ── Close (Draft and Active only) ── */}
+                        {(a.status === 'Draft' || a.status === 'Active') && (
+                          <button
+                            className="assess-action-btn assess-action-close"
+                            onClick={() => handleClose(a.id)}
+                            disabled={mutating}
+                          >
+                            Close
+                          </button>
+                        )}
+
+                        {/* ── Delete with inline confirm ── */}
+                        {confirmDeleteId === a.id ? (
+                          <>
+                            <span className="assess-confirm-text">Sure?</span>
+                            <button
+                              className="assess-action-btn assess-action-danger"
+                              onClick={() => handleDelete(a.id)}
+                              disabled={mutating}
+                            >
+                              {mutating ? '…' : 'Delete'}
+                            </button>
+                            <button
+                              className="assess-action-btn"
+                              onClick={() => setConfirmDeleteId(null)}
+                              disabled={mutating}
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            className="assess-action-btn assess-action-danger"
+                            onClick={() => setConfirmDeleteId(a.id)}
+                          >
+                            Delete
+                          </button>
+                        )}
+
                       </div>
                     </td>
                   </tr>
