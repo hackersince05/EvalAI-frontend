@@ -7,8 +7,8 @@ const HF_MODEL_URL =
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 serve(async (req) => {
@@ -48,16 +48,14 @@ serve(async (req) => {
       );
     }
 
-    const results = [];
-
-    for (const answer of answers) {
+    // Score all answers in parallel — avoids sequential cold-start timeouts
+    const results = await Promise.all(answers.map(async (answer) => {
       const sampleAnswer = answer.questions?.sample_answer;
       const answerText   = answer.answer_text;
 
       // Skip if either side is empty — cannot compute similarity
       if (!sampleAnswer?.trim() || !answerText?.trim()) {
-        results.push({ id: answer.id, ai_score: null });
-        continue;
+        return { id: answer.id, ai_score: null };
       }
 
       // Call HuggingFace Inference API
@@ -80,8 +78,7 @@ serve(async (req) => {
       if (!hfRes.ok) {
         const errText = await hfRes.text();
         console.error(`HuggingFace error for answer ${answer.id}:`, errText);
-        results.push({ id: answer.id, ai_score: null });
-        continue;
+        return { id: answer.id, ai_score: null };
       }
 
       // Response is an array of cosine similarities, e.g. [0.847]
@@ -97,8 +94,8 @@ serve(async (req) => {
           .eq("id", answer.id);
       }
 
-      results.push({ id: answer.id, ai_score: similarity });
-    }
+      return { id: answer.id, ai_score: similarity };
+    }));
 
     return new Response(JSON.stringify({ results }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
