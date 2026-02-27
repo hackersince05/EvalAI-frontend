@@ -2,6 +2,34 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
 import './GradingDetail.css';
 
+// ── Circular progress ring ─────────────────────────────────────────────────
+function CircularProgress({ value, max, size = 104, strokeWidth = 9 }) {
+  const radius        = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const pct           = max > 0 ? Math.min(value / max, 1) : 0;
+  const offset        = circumference * (1 - pct);
+  const color         = pct >= 0.75 ? '#10b981' : pct >= 0.5 ? '#f59e0b' : '#ef4444';
+
+  return (
+    // Rotate so the arc starts at 12 o'clock instead of 3 o'clock
+    <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+      {/* Track */}
+      <circle cx={size / 2} cy={size / 2} r={radius}
+        fill="none" stroke="#e0e0e0" strokeWidth={strokeWidth} />
+      {/* Progress arc */}
+      <circle cx={size / 2} cy={size / 2} r={radius}
+        fill="none"
+        stroke={color}
+        strokeWidth={strokeWidth}
+        strokeDasharray={circumference}
+        strokeDashoffset={offset}
+        strokeLinecap="round"
+        style={{ transition: 'stroke-dashoffset 0.6s ease' }}
+      />
+    </svg>
+  );
+}
+
 // ── Helpers ────────────────────────────────────────────────────────────────
 function gradeLabel(pct) {
   if (pct === null) return 'Not Graded';
@@ -282,15 +310,21 @@ function GradingDetail({ submission, onNavigate }) {
               <div className="gd-side-card">
                 <div className="gd-grade-header">Overall Grade</div>
                 <div className="gd-score-circle-wrap">
-                  <div className="gd-score-circle">
-                    {status === 'Graded' ? (
-                      <>
-                        <span className="gd-score-num">{awardedMarks}</span>
-                        <span className="gd-score-denom">/ {totalMarks}</span>
-                      </>
-                    ) : (
-                      <span className="gd-score-num" style={{ fontSize: 16, color: '#aaa' }}>—</span>
-                    )}
+                  <div className="gd-score-ring">
+                    <CircularProgress
+                      value={status === 'Graded' ? awardedMarks : 0}
+                      max={totalMarks > 0 ? totalMarks : 1}
+                    />
+                    <div className="gd-score-overlay">
+                      {status === 'Graded' ? (
+                        <>
+                          <span className="gd-score-num">{awardedMarks}</span>
+                          <span className="gd-score-denom">/{totalMarks}</span>
+                        </>
+                      ) : (
+                        <span className="gd-score-pending">—</span>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="gd-grade-label">{gradeLabel(pct)}</div>
