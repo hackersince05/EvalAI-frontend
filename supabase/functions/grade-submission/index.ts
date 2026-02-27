@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 // sentence-transformers/all-MiniLM-L6-v2 — fast, accurate semantic similarity
 const HF_MODEL_URL =
-  "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2";
+  "https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2/pipeline/sentence-similarity";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
 import { useUser } from '../UserContext';
 import './Results.css';
@@ -80,7 +80,11 @@ function Results({ onNavigate }) {
           </div>
         ) : (
           submissions.map((s) => (
-            <div key={s.id} className="res-card">
+            <div
+              key={s.id}
+              className="res-card res-card-clickable"
+              onClick={() => onNavigate('result-detail', s)}
+            >
               <div className="res-card-left">
                 <div className="res-card-title">{s.title}</div>
                 <div className="res-card-meta">
@@ -92,6 +96,7 @@ function Results({ onNavigate }) {
                 <span className={`res-badge ${s.status === 'Graded' ? 'res-badge-graded' : 'res-badge-pending'}`}>
                   {s.status}
                 </span>
+                <span className="res-card-arrow">›</span>
               </div>
             </div>
           ))

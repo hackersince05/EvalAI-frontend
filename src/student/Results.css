@@ -90,6 +90,30 @@
 
 .res-card-right {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.res-card-clickable {
+  cursor: pointer;
+}
+
+.res-card-clickable:hover {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  border-color: #c7d2fe;
+}
+
+.res-card-arrow {
+  font-size: 20px;
+  color: #bbb;
+  line-height: 1;
+  transition: color 0.15s, transform 0.15s;
+}
+
+.res-card-clickable:hover .res-card-arrow {
+  color: #667eea;
+  transform: translateX(2px);
 }
 
 /* ========== BADGES ========== */

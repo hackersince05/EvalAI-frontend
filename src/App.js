@@ -30,8 +30,9 @@ import Analytics from './lecturer/Analytics';         // Class performance analy
 import StudentDashboard    from './student/Dashboard';           // Student overview / home
 import StudentAssessments  from './student/StudentAssessments';  // Available + completed assessments
 import StudentAnalytics    from './student/Analytics';           // Student analytics (placeholder)
-import TakeTest from './student/TakeTest'; // Test-taking interface for students
-import Results  from './student/Results';  // Student's past test results
+import TakeTest      from './student/TakeTest';       // Test-taking interface for students
+import Results       from './student/Results';        // Student's past test results
+import ResultDetail  from './student/ResultDetail';   // Per-submission score breakdown
 
 import './App.css';
 
@@ -41,7 +42,7 @@ const AUTHENTICATED_PAGES = [
   // Lecturer routes
   'dashboard', 'assessments', 'grading', 'grading-detail', 'rubrics', 'analytics', 'settings',
   // Student routes
-  'student-dashboard', 'student-assessments', 'student-analytics', 'take-test', 'results',
+  'student-dashboard', 'student-assessments', 'student-analytics', 'take-test', 'results', 'result-detail',
 ];
 
 // The first page each role lands on immediately after login
@@ -63,6 +64,9 @@ function App() {
 
   // Holds the assessment object selected from StudentAssessments so TakeTest can render it.
   const [selectedAssessment, setSelectedAssessment] = useState(null);
+
+  // Holds the submission object selected from Results so ResultDetail can render it.
+  const [selectedResult, setSelectedResult] = useState(null);
 
   // On mount: check for an active Supabase session (handles page refresh)
   // and subscribe to auth state changes for the lifetime of the app.
@@ -146,6 +150,13 @@ function App() {
       return;
     }
 
+    // When navigating to a result detail view, store the submission object.
+    if (page === 'result-detail') {
+      setSelectedResult(data ?? null);
+      setCurrentPage('result-detail');
+      return;
+    }
+
     // When navigating to the test-taking view, store the selected assessment object.
     if (page === 'take-test') {
       setSelectedAssessment(data ?? null);
@@ -193,6 +204,7 @@ function App() {
       case 'student-analytics':   return <StudentAnalytics   onNavigate={handleNavigate} />;
       case 'take-test':           return <TakeTest           assessment={selectedAssessment} onNavigate={handleNavigate} />;
       case 'results':             return <Results            onNavigate={handleNavigate} />;
+      case 'result-detail':       return <ResultDetail       submission={selectedResult}    onNavigate={handleNavigate} />;
 
       default:            return <DashboardPage onNavigate={handleNavigate} />;
     }
