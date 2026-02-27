@@ -62,7 +62,7 @@ function LandingPage({ onNavigate }) {
         <div className="role-container">
           {/* Student Card */}
           <div className="role-card student-card">
-            <div className="role-icon student-icon"></div>
+            <img src="/studenticon.avif" alt="Student" className="role-icon" />
             <h2 className="role-title">I am a Student</h2>
             <p className="role-description">
               Personalized workspace with assessments and feedback tailored to you.
@@ -77,7 +77,7 @@ function LandingPage({ onNavigate }) {
 
           {/* Lecturer Card */}
           <div className="role-card lecturer-card">
-            <div className="role-icon lecturer-icon"></div>
+            <img src="/lecturericon.png" alt="Lecturer" className="role-icon" />
             <h2 className="role-title">I am a Lecturer</h2>
             <p className="role-description">
               Role-aware dashboard for question design, grading, and analytics.
