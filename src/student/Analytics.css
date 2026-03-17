@@ -1,0 +1,299 @@
+/* ========== PAGE ========== */
+.san-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+/* ========== TOPBAR ========== */
+.san-topbar {
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.san-topbar-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.san-topbar-sub {
+  font-size: 13px;
+  color: #999;
+  margin-top: 2px;
+}
+
+/* ========== BODY ========== */
+.san-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ========== EMPTY STATES ========== */
+.san-empty {
+  text-align: center;
+  padding: 60px 24px;
+  color: #aaa;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.san-empty-inner {
+  padding: 24px;
+  text-align: center;
+  color: #bbb;
+  font-size: 13px;
+}
+
+/* ========== STAT CARDS ========== */
+.san-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.san-stat-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.san-stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #999;
+  margin-bottom: 8px;
+}
+
+.san-stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.san-stat-sub {
+  font-size: 12px;
+  color: #999;
+}
+
+/* ========== CARDS ========== */
+.san-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.san-card-header {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.san-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.san-card-sub {
+  font-size: 12px;
+  color: #999;
+  margin-top: 2px;
+}
+
+/* ========== VERTICAL BAR CHART ========== */
+.san-bar-chart-wrap {
+  position: relative;
+  padding: 16px 20px 0;
+}
+
+.san-bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 180px;
+  padding-left: 36px; /* space for y labels */
+  padding-bottom: 40px;
+}
+
+.san-bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  min-width: 0;
+  gap: 4px;
+}
+
+.san-bar {
+  width: 100%;
+  max-width: 48px;
+  border-radius: 4px 4px 0 0;
+  min-height: 4px;
+  transition: height 0.6s ease;
+}
+
+.san-bar-pct {
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.san-bar-label {
+  font-size: 10px;
+  color: #555;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  margin-top: 4px;
+}
+
+.san-bar-date {
+  font-size: 10px;
+  color: #bbb;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Y-axis reference lines */
+.san-y-lines {
+  position: absolute;
+  inset: 16px 20px 40px 56px;
+  pointer-events: none;
+}
+
+.san-y-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed #e8e8e8;
+}
+
+.san-y-label {
+  position: absolute;
+  left: -36px;
+  top: -8px;
+  font-size: 10px;
+  color: #bbb;
+  width: 30px;
+  text-align: right;
+}
+
+/* ========== GRID ========== */
+.san-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* ========== DISTRIBUTION BARS ========== */
+.san-dist-list {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.san-dist-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.san-dist-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #555;
+  width: 100px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.san-dist-label-q {
+  width: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.san-dist-track {
+  flex: 1;
+  height: 10px;
+  background: #f0f0f0;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.san-dist-fill {
+  height: 100%;
+  border-radius: 99px;
+  min-width: 4px;
+  transition: width 0.6s ease;
+}
+
+.san-dist-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  width: 56px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ========== FOCUS AREA HINT ========== */
+.san-q-hint {
+  padding: 10px 20px 14px;
+  font-size: 12px;
+  color: #888;
+  border-top: 1px solid #f0f0f0;
+}
+
+.san-q-hint strong {
+  color: #ef4444;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 900px) {
+  .san-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .san-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .san-body {
+    padding: 16px;
+  }
+
+  .san-stats-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .san-bar-chart {
+    gap: 6px;
+  }
+}
