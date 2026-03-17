@@ -269,7 +269,6 @@ function DashboardPage({ onNavigate }) {
               {[
                 { icon: '➕', label: 'New Assessment', desc: 'Create a question',    page: 'assessments' },
                 { icon: '📤', label: 'Upload Scripts',  desc: 'Batch submit answers', page: 'grading'     },
-                { icon: '📐', label: 'Build Rubric',    desc: 'Define mark bands',   page: 'rubrics'     },
                 { icon: '📈', label: 'View Analytics',  desc: 'Scores & trends',     page: 'analytics'   },
               ].map((qa) => (
                 <button

@@ -23,7 +23,6 @@ import DashboardPage from './lecturer/DashboardPage'; // Lecturer overview / hom
 import Assessments from './lecturer/Assessments';     // Assessment management
 import GradingQueue from './lecturer/GradingQueue';   // Submissions awaiting grading review
 import GradingDetail from './lecturer/GradingDetail'; // Individual submission evaluation view
-import Rubrics from './lecturer/Rubrics';             // Rubric builder and management
 import Analytics from './lecturer/Analytics';         // Class performance analytics
 
 // Student page components
@@ -40,7 +39,7 @@ import './App.css';
 // Any key in this list causes AppLayout (sidebar) to be rendered.
 const AUTHENTICATED_PAGES = [
   // Lecturer routes
-  'dashboard', 'assessments', 'grading', 'grading-detail', 'rubrics', 'analytics', 'settings',
+  'dashboard', 'assessments', 'grading', 'grading-detail', 'analytics', 'settings',
   // Student routes
   'student-dashboard', 'student-assessments', 'student-analytics', 'take-test', 'results', 'result-detail',
 ];
@@ -195,7 +194,6 @@ function App() {
       case 'assessments': return <Assessments    onNavigate={handleNavigate} />;
       case 'grading':        return <GradingQueue  onNavigate={handleNavigate} />;
       case 'grading-detail': return <GradingDetail submission={selectedSubmission} onNavigate={handleNavigate} />;
-      case 'rubrics':     return <Rubrics       onNavigate={handleNavigate} />;
       case 'analytics':   return <Analytics     onNavigate={handleNavigate} />;
 
       // --- Student routes ---

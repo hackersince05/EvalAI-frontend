@@ -7,7 +7,6 @@ const LECTURER_NAV = [
   { key: 'dashboard',   label: 'Dashboard' },
   { key: 'assessments', label: 'Assessments' },
   { key: 'grading',     label: 'Grading Queue' },
-  { key: 'rubrics',     label: 'Rubrics' },
   { key: 'analytics',   label: 'Analytics' },
 ];
 
