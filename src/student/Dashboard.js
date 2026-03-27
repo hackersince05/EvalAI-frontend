@@ -62,7 +62,6 @@ const STATS = [
     delta:     '+1 this week',
     deltaType: 'up',
     icon:      <IconCheckCircle />,
-    accent:    '#10b981',
   },
   {
     label:     'Avg. Score',
@@ -70,7 +69,6 @@ const STATS = [
     delta:     '+3% vs last assessment',
     deltaType: 'up',
     icon:      <IconBarChart />,
-    accent:    'linear-gradient(90deg,#667eea,#764ba2)',
   },
   {
     label:     'Available',
@@ -78,7 +76,6 @@ const STATS = [
     delta:     '1 closing this week',
     deltaType: null,
     icon:      <IconClipboard />,
-    accent:    '#3b82f6',
   },
   {
     label:     'Pending Review',
@@ -86,7 +83,6 @@ const STATS = [
     delta:     'Submitted yesterday',
     deltaType: null,
     icon:      <IconHourglass />,
-    accent:    '#f59e0b',
   },
 ];
 
@@ -181,7 +177,7 @@ function Dashboard({ onNavigate }) {
         <div className="dash-stats-row">
           {STATS.map((s) => (
             <div key={s.label} className="dash-stat-card">
-              <div className="dash-stat-accent" style={{ background: s.accent }} />
+              <div className="dash-stat-accent" />
               <div className="dash-stat-icon">{s.icon}</div>
               <div className="dash-stat-label">{s.label}</div>
               <div className="dash-stat-value">{s.value}</div>

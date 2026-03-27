@@ -2,8 +2,8 @@
 .sidebar {
   width: 250px;
   min-height: 100vh;
-  background-color: #ffffff;
-  border-right: 1px solid #e0e0e0;
+  background-color: #0d1117;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -17,6 +17,8 @@
 
 .logo-section {
   margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .logo-img {
@@ -24,15 +26,16 @@
   height: auto;
   display: block;
   margin: 0 auto;
-  filter: none;
+  filter: invert(1);
+  opacity: 0.9;
 }
 
 .menu-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  color: #999;
+  color: rgba(255, 255, 255, 0.3);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   margin-bottom: 12px;
 }
 
@@ -43,13 +46,13 @@
 }
 
 .sidebar-menu li {
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .sidebar-menu a {
   display: block;
   padding: 10px 12px;
-  color: #666;
+  color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
   border-radius: 6px;
   font-size: 14px;
@@ -58,14 +61,16 @@
 }
 
 .sidebar-menu a:hover {
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .sidebar-menu li.active a {
-  background-color: #333;
-  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #e6edf3;
   font-weight: 600;
+  border-left: 2px solid #8b949e;
+  padding-left: 10px;
 }
 
 .sidebar-footer {
@@ -75,18 +80,19 @@
 .settings-section {
   margin-bottom: 20px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .settings-section a {
-  color: #666;
+  color: rgba(255, 255, 255, 0.4);
   text-decoration: none;
   font-size: 14px;
   cursor: pointer;
+  transition: color 0.2s;
 }
 
 .settings-section a:hover {
-  color: #333;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .user-profile {
@@ -99,8 +105,9 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e6edf3;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -117,11 +124,11 @@
 
 .user-name {
   font-weight: 600;
-  color: #333;
+  color: #e6edf3;
 }
 
 .user-role {
-  color: #999;
+  color: rgba(255, 255, 255, 0.4);
   font-size: 12px;
 }
 
@@ -132,7 +139,7 @@
     padding: 10px;
   }
 
-  .logo-box,
+  .logo-img,
   .menu-label,
   .settings-section,
   .user-info {

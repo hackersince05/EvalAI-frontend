@@ -1,7 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './LandingPage.css';
 
+const TYPING_LINES = ['Intelligent Assessment', 'Beyond Keywords'];
+const TYPING_SPEED = 55;
+
+function useTypingEffect() {
+  const [line1, setLine1] = useState('');
+  const [line2, setLine2] = useState('');
+  const [phase, setPhase] = useState(0);
+
+  useEffect(() => {
+    if (phase === 0) {
+      if (line1.length < TYPING_LINES[0].length) {
+        const t = setTimeout(() => setLine1(TYPING_LINES[0].slice(0, line1.length + 1)), TYPING_SPEED);
+        return () => clearTimeout(t);
+      } else {
+        const t = setTimeout(() => setPhase(1), 200);
+        return () => clearTimeout(t);
+      }
+    } else if (phase === 1) {
+      if (line2.length < TYPING_LINES[1].length) {
+        const t = setTimeout(() => setLine2(TYPING_LINES[1].slice(0, line2.length + 1)), TYPING_SPEED);
+        return () => clearTimeout(t);
+      } else {
+        setPhase(2);
+      }
+    }
+  }, [line1, line2, phase]);
+
+  return { line1, line2, done: phase === 2 };
+}
+
 function LandingPage({ onNavigate }) {
+  const { line1, line2, done } = useTypingEffect();
+
   const handleGetStarted = () => {
     // Navigate to dashboard or signup
     window.location.href = '/dashboard';
@@ -47,7 +79,11 @@ function LandingPage({ onNavigate }) {
       <section className="hero">
         <div className="hero-content">
           <div className="hero-badge">Interactive, SBERT-powered assessment</div>
-          <h1 className="hero-title">Intelligent Assessment<br />Beyond Keywords</h1>
+          <h1 className="hero-title">
+            <span>{line1}{line1.length < TYPING_LINES[0].length && <span className="type-cursor" />}</span>
+            <br />
+            <span>{line2}{!done && line1.length === TYPING_LINES[0].length && <span className="type-cursor" />}{done && <span className="type-cursor type-cursor-blink" />}</span>
+          </h1>
           <p className="hero-description">
             EvalAI uses Sentence-BERT to evaluate theory answers based on meaning, not just keyword matching.
           </p>
