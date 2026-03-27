@@ -1,47 +1,39 @@
 import { useState, useEffect } from 'react';
 import './LandingPage.css';
 
+const TYPING_LINES = ['Intelligent Assessment', 'Beyond Keywords'];
+const TYPING_SPEED = 55;
+
 function useTypingEffect() {
-  const line1text = 'Intelligent Assessment';
-  const line2text = 'Beyond Keywords';
   const [line1, setLine1] = useState('');
   const [line2, setLine2] = useState('');
-  const [done, setDone] = useState(false);
+  const [phase, setPhase] = useState(0);
 
   useEffect(() => {
-    let cancelled = false;
-    let i = 0;
-
-    function typeChar() {
-      if (cancelled) return;
-      if (i <= line1text.length) {
-        setLine1(line1text.slice(0, i));
-        i++;
-        setTimeout(typeChar, 55);
+    if (phase === 0) {
+      if (line1.length < TYPING_LINES[0].length) {
+        const t = setTimeout(() => setLine1(TYPING_LINES[0].slice(0, line1.length + 1)), TYPING_SPEED);
+        return () => clearTimeout(t);
       } else {
-        let j = 0;
-        function typeLine2() {
-          if (cancelled) return;
-          if (j <= line2text.length) {
-            setLine2(line2text.slice(0, j));
-            j++;
-            setTimeout(typeLine2, 65);
-          } else {
-            setDone(true);
-          }
-        }
-        setTimeout(typeLine2, 200);
+        const t = setTimeout(() => setPhase(1), 200);
+        return () => clearTimeout(t);
+      }
+    } else if (phase === 1) {
+      if (line2.length < TYPING_LINES[1].length) {
+        const t = setTimeout(() => setLine2(TYPING_LINES[1].slice(0, line2.length + 1)), TYPING_SPEED);
+        return () => clearTimeout(t);
+      } else {
+        setPhase(2);
       }
     }
-    setTimeout(typeChar, 400);
-    return () => { cancelled = true; };
-  }, []);
+  }, [line1, line2, phase]);
 
-  return { line1, line2, done };
+  return { line1, line2, done: phase === 2 };
 }
 
 function LandingPage({ onNavigate }) {
   const { line1, line2, done } = useTypingEffect();
+
   const handleGetStarted = () => {
     // Navigate to dashboard or signup
     window.location.href = '/dashboard';
@@ -88,8 +80,14 @@ function LandingPage({ onNavigate }) {
         <div className="hero-content">
           <div className="hero-badge">Interactive, SBERT-powered assessment</div>
           <h1 className="hero-title">
+<<<<<<< HEAD
             {line1}<span className={`type-cursor${done ? ' type-cursor-done' : ''}`}>|</span>
             {line2.length > 0 && <><br />{line2}</>}
+=======
+            <span>{line1}{line1.length < TYPING_LINES[0].length && <span className="type-cursor" />}</span>
+            <br />
+            <span>{line2}{!done && line1.length === TYPING_LINES[0].length && <span className="type-cursor" />}{done && <span className="type-cursor type-cursor-blink" />}</span>
+>>>>>>> feature/dark-silver-theme
           </h1>
           <p className="hero-description">
             EvalAI uses Sentence-BERT to evaluate theory answers based on meaning, not just keyword matching.

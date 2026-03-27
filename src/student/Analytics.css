@@ -3,13 +3,15 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #f5f7fa;
+  background: #0d1117;
 }
 
 /* ========== TOPBAR ========== */
 .san-topbar {
-  background: white;
-  border-bottom: 1px solid #e0e0e0;
+  background: rgba(13, 17, 23, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   padding: 0 24px;
   height: 64px;
   display: flex;
@@ -21,14 +23,14 @@
 }
 
 .san-topbar-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #e6edf3;
 }
 
 .san-topbar-sub {
-  font-size: 13px;
-  color: #999;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.3);
   margin-top: 2px;
 }
 
@@ -44,7 +46,7 @@
 .san-empty {
   text-align: center;
   padding: 60px 24px;
-  color: #aaa;
+  color: rgba(255, 255, 255, 0.25);
   font-size: 14px;
   line-height: 1.6;
 }
@@ -52,7 +54,7 @@
 .san-empty-inner {
   padding: 24px;
   text-align: center;
-  color: #bbb;
+  color: rgba(255, 255, 255, 0.2);
   font-size: 13px;
 }
 
@@ -64,56 +66,61 @@
 }
 
 .san-stat-card {
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-top: 2px solid #4a5568;
+  border-radius: 0;
   padding: 20px;
 }
 
 .san-stat-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #999;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.3);
   margin-bottom: 8px;
 }
 
 .san-stat-value {
   font-size: 28px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #e6edf3;
   line-height: 1;
   margin-bottom: 6px;
 }
 
 .san-stat-sub {
   font-size: 12px;
-  color: #999;
+  color: rgba(255, 255, 255, 0.3);
 }
 
 /* ========== CARDS ========== */
 .san-card {
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 4px;
   overflow: hidden;
 }
 
 .san-card-header {
   padding: 16px 20px 12px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .san-card-title {
   font-size: 14px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #e6edf3;
 }
 
 .san-card-sub {
   font-size: 12px;
-  color: #999;
+  color: rgba(255, 255, 255, 0.3);
   margin-top: 2px;
 }
 
@@ -128,7 +135,7 @@
   align-items: flex-end;
   gap: 12px;
   height: 180px;
-  padding-left: 36px; /* space for y labels */
+  padding-left: 36px;
   padding-bottom: 40px;
 }
 
@@ -146,8 +153,9 @@
 .san-bar {
   width: 100%;
   max-width: 48px;
-  border-radius: 4px 4px 0 0;
+  border-radius: 2px 2px 0 0;
   min-height: 4px;
+  background: #4a5568;
   transition: height 0.6s ease;
 }
 
@@ -155,11 +163,12 @@
   font-size: 11px;
   font-weight: 700;
   text-align: center;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .san-bar-label {
   font-size: 10px;
-  color: #555;
+  color: rgba(255, 255, 255, 0.3);
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
@@ -170,7 +179,7 @@
 
 .san-bar-date {
   font-size: 10px;
-  color: #bbb;
+  color: rgba(255, 255, 255, 0.2);
   text-align: center;
   white-space: nowrap;
 }
@@ -186,7 +195,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  border-top: 1px dashed #e8e8e8;
+  border-top: 1px dashed rgba(255, 255, 255, 0.06);
 }
 
 .san-y-label {
@@ -194,7 +203,7 @@
   left: -36px;
   top: -8px;
   font-size: 10px;
-  color: #bbb;
+  color: rgba(255, 255, 255, 0.2);
   width: 30px;
   text-align: right;
 }
@@ -223,7 +232,7 @@
 .san-dist-label {
   font-size: 12px;
   font-weight: 500;
-  color: #555;
+  color: rgba(255, 255, 255, 0.4);
   width: 100px;
   flex-shrink: 0;
   white-space: nowrap;
@@ -234,20 +243,21 @@
 .san-dist-label-q {
   width: 28px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #e6edf3;
 }
 
 .san-dist-track {
   flex: 1;
-  height: 10px;
-  background: #f0f0f0;
-  border-radius: 99px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 0;
   overflow: hidden;
 }
 
 .san-dist-fill {
   height: 100%;
-  border-radius: 99px;
+  border-radius: 0;
+  background: #4a5568;
   min-width: 4px;
   transition: width 0.6s ease;
 }
@@ -255,7 +265,7 @@
 .san-dist-count {
   font-size: 12px;
   font-weight: 600;
-  color: #555;
+  color: rgba(255, 255, 255, 0.4);
   width: 56px;
   text-align: right;
   flex-shrink: 0;
@@ -265,35 +275,20 @@
 .san-q-hint {
   padding: 10px 20px 14px;
   font-size: 12px;
-  color: #888;
-  border-top: 1px solid #f0f0f0;
+  color: rgba(255, 255, 255, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.san-q-hint strong {
-  color: #ef4444;
-}
+.san-q-hint strong { color: #f85149; }
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 900px) {
-  .san-stats-row {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .san-grid-2 {
-    grid-template-columns: 1fr;
-  }
+  .san-stats-row { grid-template-columns: repeat(2, 1fr); }
+  .san-grid-2    { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 600px) {
-  .san-body {
-    padding: 16px;
-  }
-
-  .san-stats-row {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .san-bar-chart {
-    gap: 6px;
-  }
+  .san-body      { padding: 16px; }
+  .san-stats-row { grid-template-columns: 1fr 1fr; }
+  .san-bar-chart { gap: 6px; }
 }
