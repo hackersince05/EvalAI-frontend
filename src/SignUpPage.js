@@ -72,7 +72,7 @@ function SignUpPage({ onNavigate }) {
             onClick={() => onNavigate('landing')}
             style={{ cursor: 'pointer' }}
           >
-            <div className="logo-icon">EvalAI</div>
+            <img src={`${process.env.PUBLIC_URL}/evalai-logo.png`} alt="EvalAI" className="nav-logo-img" />
           </div>
           <div className="nav-right">
             <p className="login-subtitle">
