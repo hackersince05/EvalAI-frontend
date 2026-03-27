@@ -34,7 +34,7 @@ function Sidebar({ currentPage, onNavigate }) {
   return (
     <aside className="sidebar">
       <div className="logo-section">
-        <div className="logo-box">EvalAI</div>
+        <img src="/Eval AI logo.png" alt="EvalAI" className="logo-img" />
       </div>
 
       {/* Role-driven navigation list */}
