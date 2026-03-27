@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './LandingPage.css';
 
 const TYPING_LINES = ['Intelligent Assessment', 'Beyond Keywords'];
@@ -80,14 +80,9 @@ function LandingPage({ onNavigate }) {
         <div className="hero-content">
           <div className="hero-badge">Interactive, SBERT-powered assessment</div>
           <h1 className="hero-title">
-<<<<<<< HEAD
-            {line1}<span className={`type-cursor${done ? ' type-cursor-done' : ''}`}>|</span>
-            {line2.length > 0 && <><br />{line2}</>}
-=======
             <span>{line1}{line1.length < TYPING_LINES[0].length && <span className="type-cursor" />}</span>
             <br />
             <span>{line2}{!done && line1.length === TYPING_LINES[0].length && <span className="type-cursor" />}{done && <span className="type-cursor type-cursor-blink" />}</span>
->>>>>>> feature/dark-silver-theme
           </h1>
           <p className="hero-description">
             EvalAI uses Sentence-BERT to evaluate theory answers based on meaning, not just keyword matching.
