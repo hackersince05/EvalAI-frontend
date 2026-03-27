@@ -107,7 +107,10 @@ function GradingDetail({ submission, onNavigate }) {
       await fetchAnswers(); // pull fresh ai_score values into state
       showToast('AI grading complete.');
     } catch (err) {
-      const msg = err?.message || err?.error_description || JSON.stringify(err);
+      let msg = err?.message || JSON.stringify(err);
+      if (err?.context?.json) {
+        try { const body = await err.context.json(); msg = body?.error || body?.msg || JSON.stringify(body); } catch {}
+      }
       showToast(`AI grading failed: ${msg}`);
       console.error(err);
     } finally {
