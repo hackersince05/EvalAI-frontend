@@ -379,7 +379,12 @@ function Assessments({ onNavigate }) {
                             onClick={() => copyCode(a.id, a.accessCode)}
                             title="Copy access code"
                           >
-                            {copiedId === a.id ? '✓ Copied' : 'Copy'}
+                            {copiedId === a.id ? (
+                                              <>
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="12" height="12" style={{marginRight:4}}><polyline points="20 6 9 17 4 12"/></svg>
+                                                Copied
+                                              </>
+                                            ) : 'Copy'}
                           </button>
                         </div>
                       )}

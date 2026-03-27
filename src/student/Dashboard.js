@@ -2,6 +2,58 @@ import React from 'react';
 import { useUser } from '../UserContext';
 import '../lecturer/DashboardPage.css';
 
+// ── SVG Icons ───────────────────────────────────────────────────────────────
+const IconCheckCircle = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+  </svg>
+);
+const IconBarChart = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+    <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
+    <line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>
+  </svg>
+);
+const IconClipboard = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+    <rect x="5" y="2" width="14" height="20" rx="2"/>
+    <line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="12" y2="15"/>
+  </svg>
+);
+const IconHourglass = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+    <path d="M5 2h14M5 22h14M6 2v4l6 6-6 6v4M18 2v4l-6 6 6 6v4"/>
+  </svg>
+);
+const IconBell = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+  </svg>
+);
+const IconPencil = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+  </svg>
+);
+const IconFile = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/>
+  </svg>
+);
+const IconTrendingUp = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+  </svg>
+);
+const IconClipboardSmall = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+    <rect x="5" y="2" width="14" height="20" rx="2"/>
+    <line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/>
+  </svg>
+);
+
 // ── Mock data ──────────────────────────────────────────────────────────────
 const STATS = [
   {
@@ -9,7 +61,7 @@ const STATS = [
     value:     '3',
     delta:     '+1 this week',
     deltaType: 'up',
-    icon:      '✅',
+    icon:      <IconCheckCircle />,
     accent:    '#10b981',
   },
   {
@@ -17,7 +69,7 @@ const STATS = [
     value:     '78%',
     delta:     '+3% vs last assessment',
     deltaType: 'up',
-    icon:      '📊',
+    icon:      <IconBarChart />,
     accent:    'linear-gradient(90deg,#667eea,#764ba2)',
   },
   {
@@ -25,7 +77,7 @@ const STATS = [
     value:     '2',
     delta:     '1 closing this week',
     deltaType: null,
-    icon:      '📋',
+    icon:      <IconClipboard />,
     accent:    '#3b82f6',
   },
   {
@@ -33,7 +85,7 @@ const STATS = [
     value:     '1',
     delta:     'Submitted yesterday',
     deltaType: null,
-    icon:      '⏳',
+    icon:      <IconHourglass />,
     accent:    '#f59e0b',
   },
 ];
@@ -63,6 +115,13 @@ const RECENT_RESULTS = [
   { id: 'A003', title: 'CS-201 Final',  topic: 'Algorithms',      score: 0.82, maxMarks: 150, color: '#667eea' },
   { id: 'A002', title: 'CS-301 Quiz 2', topic: 'Data Structures', score: 0.74, maxMarks: 30,  color: '#10b981' },
   { id: 'A004', title: 'CS-401 Quiz 1', topic: 'Automata Theory', score: 0.91, maxMarks: 40,  color: '#3b82f6' },
+];
+
+const QUICK_ACTIONS = [
+  { icon: <IconPencil />,     label: 'Take Assessment', desc: 'Start an available test',  page: 'student-assessments' },
+  { icon: <IconFile />,       label: 'Past Results',    desc: 'View graded submissions',  page: 'student-assessments' },
+  { icon: <IconTrendingUp />, label: 'Analytics',       desc: 'Your performance trends',  page: 'student-analytics'   },
+  { icon: <IconBell />,       label: 'Notifications',   desc: 'Grades & announcements',   page: 'student-dashboard'   },
 ];
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -99,7 +158,7 @@ function Dashboard({ onNavigate }) {
         </div>
         <div className="dash-topbar-actions">
           <button className="dash-notif-btn" title="Notifications">
-            🔔
+            <IconBell />
             <span className="dash-notif-dot" />
           </button>
           <button className="dash-btn-primary" onClick={() => onNavigate('student-assessments')}>
@@ -162,9 +221,9 @@ function Dashboard({ onNavigate }) {
               >
                 <div
                   className="dash-queue-avatar"
-                  style={{ background: item.urgency === 'high' ? '#ef4444' : '#3b82f6', fontSize: '16px' }}
+                  style={{ background: item.urgency === 'high' ? '#ef4444' : '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 >
-                  📋
+                  <IconClipboardSmall />
                 </div>
                 <div className="dash-queue-info">
                   <div className="dash-queue-name">{item.title}</div>
@@ -230,12 +289,7 @@ function Dashboard({ onNavigate }) {
             <div className="dash-card-title">Quick Actions</div>
           </div>
           <div className="dash-qa-grid">
-            {[
-              { icon: '📝', label: 'Take Assessment', desc: 'Start an available test',  page: 'student-assessments' },
-              { icon: '📄', label: 'Past Results',    desc: 'View graded submissions',  page: 'student-assessments' },
-              { icon: '📈', label: 'Analytics',       desc: 'Your performance trends',  page: 'student-analytics'   },
-              { icon: '🔔', label: 'Notifications',   desc: 'Grades & announcements',   page: 'student-dashboard'   },
-            ].map((qa) => (
+            {QUICK_ACTIONS.map((qa) => (
               <button
                 key={qa.label}
                 className="dash-qa-btn"

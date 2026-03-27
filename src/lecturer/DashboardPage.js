@@ -2,6 +2,52 @@ import React from 'react';
 import { useUser } from '../UserContext';
 import './DashboardPage.css';
 
+// ── SVG Icons ───────────────────────────────────────────────────────────────
+const IconBarChart = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+    <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
+    <line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>
+  </svg>
+);
+const IconClipboard = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+    <rect x="5" y="2" width="14" height="20" rx="2"/>
+    <line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="12" y2="15"/>
+  </svg>
+);
+const IconHourglass = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+    <path d="M5 2h14M5 22h14M6 2v4l6 6-6 6v4M18 2v4l-6 6 6 6v4"/>
+  </svg>
+);
+const IconQuestion = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+    <circle cx="12" cy="12" r="10"/>
+    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+  </svg>
+);
+const IconBell = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+  </svg>
+);
+const IconPlus = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+  </svg>
+);
+const IconUpload = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+    <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
+    <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+  </svg>
+);
+const IconTrendingUp = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+  </svg>
+);
+
 // ── Mock data ──────────────────────────────────────────────────────────────
 const STATS = [
   {
@@ -9,7 +55,7 @@ const STATS = [
     value:     '48',
     delta:     '+3 this week',
     deltaType: 'up',
-    icon:      '?',
+    icon:      <IconQuestion />,
     accent:    'linear-gradient(90deg,#667eea,#764ba2)',
   },
   {
@@ -17,7 +63,7 @@ const STATS = [
     value:     '12',
     delta:     '4 flagged for review',
     deltaType: 'down',
-    icon:      '⏳',
+    icon:      <IconHourglass />,
     accent:    '#f59e0b',
   },
   {
@@ -25,7 +71,7 @@ const STATS = [
     value:     '74%',
     delta:     '+2% vs last batch',
     deltaType: 'up',
-    icon:      '📊',
+    icon:      <IconBarChart />,
     accent:    '#10b981',
   },
   {
@@ -33,7 +79,7 @@ const STATS = [
     value:     '3',
     delta:     '1 closing this week',
     deltaType: null,
-    icon:      '📋',
+    icon:      <IconClipboard />,
     accent:    '#3b82f6',
   },
 ];
@@ -61,6 +107,12 @@ const SCORE_DIST = [
   { label: '70–79%',  fill: 'linear-gradient(90deg,#3b82f6,#60a5fa)', pct: 20, count: 10 },
   { label: '60–69%',  fill: '#f59e0b',                                pct: 6,  count: 3  },
   { label: '< 60%',   fill: '#ef4444',                                pct: 4,  count: 2  },
+];
+
+const QUICK_ACTIONS = [
+  { icon: <IconPlus />,       label: 'New Assessment', desc: 'Create a question',    page: 'assessments' },
+  { icon: <IconUpload />,     label: 'Upload Scripts',  desc: 'Batch submit answers', page: 'grading'     },
+  { icon: <IconTrendingUp />, label: 'View Analytics',  desc: 'Scores & trends',     page: 'analytics'   },
 ];
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -91,7 +143,6 @@ const today = new Date().toLocaleDateString('en-GB', {
   weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
 });
 
-// Highlight a substring in bold inside an activity text string
 function ActivityText({ text, bold }) {
   const idx = text.indexOf(bold);
   if (idx === -1) return <span>{text}</span>;
@@ -121,7 +172,7 @@ function DashboardPage({ onNavigate }) {
         </div>
         <div className="dash-topbar-actions">
           <button className="dash-notif-btn" title="Notifications">
-            🔔
+            <IconBell />
             <span className="dash-notif-dot" />
           </button>
           <button className="dash-btn-primary" onClick={() => onNavigate('grading')}>
@@ -266,11 +317,7 @@ function DashboardPage({ onNavigate }) {
               <div className="dash-card-title">Quick Actions</div>
             </div>
             <div className="dash-qa-grid">
-              {[
-                { icon: '➕', label: 'New Assessment', desc: 'Create a question',    page: 'assessments' },
-                { icon: '📤', label: 'Upload Scripts',  desc: 'Batch submit answers', page: 'grading'     },
-                { icon: '📈', label: 'View Analytics',  desc: 'Scores & trends',     page: 'analytics'   },
-              ].map((qa) => (
+              {QUICK_ACTIONS.map((qa) => (
                 <button
                   key={qa.label}
                   className="dash-qa-btn"
