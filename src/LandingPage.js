@@ -28,7 +28,7 @@ function LandingPage({ onNavigate }) {
       <nav className="navbar">
         <div className="nav-container">
           <div className="logo">
-            <div className="logo-icon">EvalAI</div>
+            <img src={`${process.env.PUBLIC_URL}/evalai-logo.png`} alt="EvalAI" className="nav-logo-img" />
           </div>
           <ul className="nav-menu">
             <li><a href="#home">Home</a></li>
@@ -100,25 +100,51 @@ function LandingPage({ onNavigate }) {
           
           <div className="features-grid">
             <div className="feature-card">
-              <div className="feature-icon"></div>
+              <div className="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="7"/>
+                  <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+                  <path d="M8 11a3 3 0 0 1 6 0"/>
+                </svg>
+              </div>
               <h3>Semantic Analysis</h3>
               <p>Uses SBERT to understand the context and meaning of answers, ensuring grades reflect true understanding.</p>
             </div>
 
             <div className="feature-card">
-              <div className="feature-icon"></div>
+              <div className="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="5" y="2" width="14" height="20" rx="2"/>
+                  <line x1="9" y1="7" x2="15" y2="7"/>
+                  <line x1="9" y1="11" x2="15" y2="11"/>
+                  <polyline points="9 15 11 17 15 13"/>
+                </svg>
+              </div>
               <h3>Rubric-based Scoring</h3>
               <p>Evaluates against specific criteria like accuracy, completeness, and clarity for consistent, fair results.</p>
             </div>
 
             <div className="feature-card">
-              <div className="feature-icon"></div>
+              <div className="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  <line x1="9" y1="9" x2="15" y2="9"/>
+                  <line x1="9" y1="13" x2="13" y2="13"/>
+                </svg>
+              </div>
               <h3>Detailed Feedback</h3>
               <p>Generates constructive feedback automatically, helping students learn from their mistakes immediately.</p>
             </div>
 
             <div className="feature-card">
-              <div className="feature-icon"></div>
+              <div className="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"/>
+                  <line x1="12" y1="20" x2="12" y2="4"/>
+                  <line x1="6" y1="20" x2="6" y2="14"/>
+                  <line x1="2" y1="20" x2="22" y2="20"/>
+                </svg>
+              </div>
               <h3>Performance Analytics</h3>
               <p>Track progress over time with comprehensive dashboards for both individual students and entire classes.</p>
             </div>
@@ -128,7 +154,7 @@ function LandingPage({ onNavigate }) {
 
       {/* Footer */}
       <footer className="footer">
-        <p>&copy; 2024 EvalAI. All rights reserved.</p>
+        <p>&copy; 2026 EvalAI. All rights reserved.</p>
       </footer>
     </div>
   );
