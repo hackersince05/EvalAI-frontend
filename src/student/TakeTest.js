@@ -119,7 +119,9 @@ function TakeTest({ assessment, onNavigate }) {
     return (
       <div className="tt-page">
         <div className="tt-done-card">
-          <div className="tt-done-icon">✓</div>
+          <div className="tt-done-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="32" height="32"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
           <div className="tt-done-title">Already Submitted</div>
           <div className="tt-done-sub">
             You have already submitted this assessment. Results will be available once graded.
@@ -137,7 +139,9 @@ function TakeTest({ assessment, onNavigate }) {
     return (
       <div className="tt-page">
         <div className="tt-done-card">
-          <div className="tt-done-icon tt-done-icon-success">✓</div>
+          <div className="tt-done-icon tt-done-icon-success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="32" height="32"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
           <div className="tt-done-title">Submitted!</div>
           <div className="tt-done-sub">
             Your answers have been recorded. Results will be available once your lecturer has graded them.

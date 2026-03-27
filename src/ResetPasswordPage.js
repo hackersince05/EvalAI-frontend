@@ -69,7 +69,9 @@ function ResetPasswordPage({ onNavigate }) {
           {success ? (
             /* ── Success state ── password has been updated */
             <div className="forgot-success">
-              <div className="forgot-success-icon">✓</div>
+              <div className="forgot-success-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="32" height="32"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
               <h1 className="login-title">Password updated</h1>
               <p className="login-description">
                 Your password has been changed successfully.

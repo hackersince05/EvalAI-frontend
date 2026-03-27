@@ -64,7 +64,9 @@ function ForgotPasswordPage({ onNavigate }) {
           {sent ? (
             /* ── Success state ── shown after the email is dispatched */
             <div className="forgot-success">
-              <div className="forgot-success-icon">✓</div>
+              <div className="forgot-success-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="32" height="32"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
               <h1 className="login-title">Check your email</h1>
               <p className="login-description">
                 We sent a password reset link to <strong>{email}</strong>.
