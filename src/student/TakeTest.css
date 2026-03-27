@@ -3,13 +3,14 @@
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  background: #f5f7fa;
+  background: #0d1117;
 }
 
 /* ========== HEADER ========== */
 .tt-header {
-  background: white;
-  border-bottom: 1px solid #e0e0e0;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
   padding: 0 24px;
   height: 56px;
   display: flex;
@@ -30,48 +31,49 @@
   background: none;
   border: none;
   font-size: 13px;
-  color: #667eea;
+  color: rgba(255,255,255,0.4);
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 4px;
-  transition: background 0.15s;
+  transition: background 0.15s, color 0.15s;
   font-family: inherit;
   white-space: nowrap;
 }
 
 .tt-back-btn:hover {
-  background: #f0f0f0;
+  background: rgba(255,255,255,0.06);
+  color: #e6edf3;
 }
 
 .tt-header-title {
   font-size: 15px;
   font-weight: 700;
-  color: #111;
+  color: #e6edf3;
   line-height: 1.2;
 }
 
 .tt-header-sub {
   font-size: 11px;
-  color: #999;
+  color: rgba(255,255,255,0.35);
   margin-top: 1px;
 }
 
 .tt-header-counter {
   font-size: 13px;
   font-weight: 600;
-  color: #555;
+  color: rgba(255,255,255,0.4);
   white-space: nowrap;
 }
 
 /* ========== PROGRESS BAR ========== */
 .tt-progress-track {
   height: 3px;
-  background: #e0e0e0;
+  background: rgba(255,255,255,0.07);
 }
 
 .tt-progress-fill {
   height: 100%;
-  background: #667eea;
+  background: #4a5568;
   transition: width 0.3s ease;
 }
 
@@ -88,8 +90,9 @@
 
 /* ========== QUESTION CARD ========== */
 .tt-q-card {
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.07);
   border-radius: 10px;
   padding: 28px;
   display: flex;
@@ -108,14 +111,14 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #667eea;
+  color: rgba(255,255,255,0.35);
 }
 
 .tt-q-marks {
   font-size: 11px;
   font-weight: 600;
-  background: #f0f0f0;
-  color: #555;
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.4);
   padding: 2px 8px;
   border-radius: 20px;
 }
@@ -123,18 +126,19 @@
 .tt-q-text {
   font-size: 16px;
   font-weight: 600;
-  color: #111;
+  color: #e6edf3;
   line-height: 1.6;
 }
 
 .tt-answer-input {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 6px;
   font-size: 14px;
   font-family: inherit;
-  color: #333;
+  color: #e6edf3;
+  background: rgba(255,255,255,0.05);
   resize: vertical;
   transition: border-color 0.15s, box-shadow 0.15s;
   box-sizing: border-box;
@@ -143,8 +147,12 @@
 
 .tt-answer-input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
+  border-color: rgba(255,255,255,0.25);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.05);
+}
+
+.tt-answer-input::placeholder {
+  color: rgba(255,255,255,0.2);
 }
 
 /* ========== NAVIGATION ========== */
@@ -156,10 +164,10 @@
 
 .tt-btn-ghost {
   padding: 9px 18px;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 6px;
-  background: white;
-  color: #333;
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.5);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -168,51 +176,51 @@
 }
 
 .tt-btn-ghost:hover:not(:disabled) {
-  background: #f9f9f9;
-  border-color: #bbb;
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.2);
 }
 
 .tt-btn-ghost:disabled {
-  opacity: 0.4;
+  opacity: 0.3;
   cursor: default;
 }
 
 .tt-btn-primary {
   padding: 9px 22px;
-  background: #333;
-  color: white;
-  border: none;
+  background: rgba(255,255,255,0.1);
+  color: #e6edf3;
+  border: 1px solid rgba(255,255,255,0.15);
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
   font-family: inherit;
 }
 
 .tt-btn-primary:hover {
-  background: #555;
+  background: rgba(255,255,255,0.16);
 }
 
 .tt-btn-submit {
   padding: 9px 24px;
-  background: #667eea;
-  color: white;
-  border: none;
+  background: rgba(74,85,104,0.6);
+  color: #e6edf3;
+  border: 1px solid rgba(74,85,104,0.8);
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
   font-family: inherit;
 }
 
 .tt-btn-submit:hover:not(:disabled) {
-  background: #5a6fd6;
+  background: rgba(74,85,104,0.8);
 }
 
 .tt-btn-submit:disabled {
-  opacity: 0.6;
+  opacity: 0.4;
   cursor: default;
 }
 
@@ -220,20 +228,21 @@
 .tt-center-message {
   text-align: center;
   padding: 80px 24px;
-  color: #aaa;
+  color: rgba(255,255,255,0.25);
   font-size: 14px;
 }
 
 .tt-center-message-error {
-  color: #c33;
+  color: #f85149;
 }
 
 /* ========== DONE / SUCCESS CARD ========== */
 .tt-done-card {
   max-width: 480px;
   margin: 80px auto;
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.07);
   border-radius: 12px;
   padding: 48px 40px;
   text-align: center;
@@ -247,8 +256,8 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: #f0f0f0;
-  color: #555;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.4);
   font-size: 22px;
   display: grid;
   place-items: center;
@@ -256,19 +265,19 @@
 }
 
 .tt-done-icon-success {
-  background: #d1fae5;
-  color: #065f46;
+  background: rgba(63,185,80,0.15);
+  color: #3fb950;
 }
 
 .tt-done-title {
   font-size: 20px;
   font-weight: 700;
-  color: #111;
+  color: #e6edf3;
 }
 
 .tt-done-sub {
   font-size: 14px;
-  color: #666;
+  color: rgba(255,255,255,0.4);
   line-height: 1.6;
   max-width: 320px;
 }

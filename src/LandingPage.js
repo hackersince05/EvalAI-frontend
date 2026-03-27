@@ -1,7 +1,47 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import './LandingPage.css';
 
+function useTypingEffect() {
+  const line1text = 'Intelligent Assessment';
+  const line2text = 'Beyond Keywords';
+  const [line1, setLine1] = useState('');
+  const [line2, setLine2] = useState('');
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    let i = 0;
+
+    function typeChar() {
+      if (cancelled) return;
+      if (i <= line1text.length) {
+        setLine1(line1text.slice(0, i));
+        i++;
+        setTimeout(typeChar, 55);
+      } else {
+        let j = 0;
+        function typeLine2() {
+          if (cancelled) return;
+          if (j <= line2text.length) {
+            setLine2(line2text.slice(0, j));
+            j++;
+            setTimeout(typeLine2, 65);
+          } else {
+            setDone(true);
+          }
+        }
+        setTimeout(typeLine2, 200);
+      }
+    }
+    setTimeout(typeChar, 400);
+    return () => { cancelled = true; };
+  }, []);
+
+  return { line1, line2, done };
+}
+
 function LandingPage({ onNavigate }) {
+  const { line1, line2, done } = useTypingEffect();
   const handleGetStarted = () => {
     // Navigate to dashboard or signup
     window.location.href = '/dashboard';
@@ -47,7 +87,10 @@ function LandingPage({ onNavigate }) {
       <section className="hero">
         <div className="hero-content">
           <div className="hero-badge">Interactive, SBERT-powered assessment</div>
-          <h1 className="hero-title">Intelligent Assessment<br />Beyond Keywords</h1>
+          <h1 className="hero-title">
+            {line1}<span className={`type-cursor${done ? ' type-cursor-done' : ''}`}>|</span>
+            {line2.length > 0 && <><br />{line2}</>}
+          </h1>
           <p className="hero-description">
             EvalAI uses Sentence-BERT to evaluate theory answers based on meaning, not just keyword matching.
           </p>

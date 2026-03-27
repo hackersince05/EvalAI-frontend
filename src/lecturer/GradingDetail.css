@@ -3,18 +3,18 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #f5f7fa;
+  background: #0d1117;
 }
 
 .gd-empty {
   padding: 40px 24px;
-  color: #999;
+  color: rgba(255,255,255,0.3);
   font-size: 14px;
 }
 
 .gd-empty button {
   margin-left: 8px;
-  color: #667eea;
+  color: rgba(255,255,255,0.5);
   background: none;
   border: none;
   cursor: pointer;
@@ -24,8 +24,9 @@
 
 /* ========== TOPBAR ========== */
 .gd-topbar {
-  background: white;
-  border-bottom: 1px solid #e0e0e0;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
   padding: 0 24px;
   height: 52px;
   display: flex;
@@ -44,7 +45,7 @@
 }
 
 .gd-crumb-link {
-  color: #666;
+  color: rgba(255,255,255,0.4);
   background: none;
   border: none;
   cursor: pointer;
@@ -55,15 +56,15 @@
 }
 
 .gd-crumb-link:hover {
-  color: #1a1a1a;
+  color: #e6edf3;
 }
 
 .gd-crumb-sep {
-  color: #bbb;
+  color: rgba(255,255,255,0.2);
 }
 
 .gd-crumb-current {
-  color: #1a1a1a;
+  color: #e6edf3;
   font-weight: 600;
 }
 
@@ -74,10 +75,10 @@
 
 .gd-btn-ghost {
   padding: 7px 16px;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 6px;
-  background: white;
-  color: #333;
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.6);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -86,24 +87,24 @@
 }
 
 .gd-btn-ghost:hover {
-  background: #f9f9f9;
+  background: rgba(255,255,255,0.08);
 }
 
 .gd-btn-primary {
   padding: 7px 16px;
-  background: #1a1a1a;
-  color: white;
-  border: none;
+  background: rgba(255,255,255,0.1);
+  color: #e6edf3;
+  border: 1px solid rgba(255,255,255,0.15);
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: all 0.15s;
   font-family: inherit;
 }
 
 .gd-btn-primary:hover {
-  background: #333;
+  background: rgba(255,255,255,0.16);
 }
 
 /* ========== BODY ========== */
@@ -125,21 +126,21 @@
 .gd-title {
   font-size: 22px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #e6edf3;
   margin: 0 0 6px;
 }
 
 .gd-meta {
   font-size: 13px;
-  color: #999;
+  color: rgba(255,255,255,0.35);
 }
 
 .gd-badge-complete {
   flex-shrink: 0;
   display: inline-block;
   padding: 5px 12px;
-  background: #d1fae5;
-  color: #065f46;
+  background: rgba(63,185,80,0.15);
+  color: #3fb950;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
@@ -156,9 +157,11 @@
 }
 
 .gd-metric-card {
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-top: 2px solid #4a5568;
+  border-radius: 0;
   padding: 16px 18px;
 }
 
@@ -167,24 +170,24 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #999;
+  color: rgba(255,255,255,0.3);
   margin-bottom: 8px;
 }
 
 .gd-metric-value {
   font-size: 28px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #e6edf3;
   line-height: 1;
   margin-bottom: 4px;
 }
 
-.gd-metric-dark { color: #1a1a1a; }
-.gd-metric-pass { color: #059669; }
+.gd-metric-dark { color: #e6edf3; }
+.gd-metric-pass { color: #3fb950; }
 
 .gd-metric-sub {
   font-size: 12px;
-  color: #999;
+  color: rgba(255,255,255,0.3);
 }
 
 /* ========== MAIN LAYOUT ========== */
@@ -203,8 +206,9 @@
 }
 
 .gd-section-card {
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.07);
   border-radius: 8px;
   padding: 20px;
 }
@@ -221,37 +225,37 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  color: #999;
+  color: rgba(255,255,255,0.3);
 }
 
 .gd-max-pts {
   font-size: 12px;
-  color: #555;
+  color: rgba(255,255,255,0.4);
   font-weight: 600;
 }
 
 .gd-question-tag {
   font-size: 15px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #e6edf3;
   margin-bottom: 8px;
 }
 
 .gd-prompt-text {
   font-size: 14px;
-  color: #444;
+  color: rgba(255,255,255,0.6);
   line-height: 1.6;
   margin: 0;
 }
 
 .gd-word-count {
   font-size: 12px;
-  color: #999;
+  color: rgba(255,255,255,0.3);
 }
 
 .gd-answer-box {
-  background: #f9fafb;
-  border-left: 3px solid #667eea;
+  background: rgba(255,255,255,0.03);
+  border-left: 3px solid #4a5568;
   border-radius: 0 6px 6px 0;
   padding: 14px 16px;
   margin-top: 8px;
@@ -259,7 +263,7 @@
 
 .gd-answer-box p {
   font-size: 14px;
-  color: #444;
+  color: rgba(255,255,255,0.65);
   line-height: 1.7;
   margin: 0 0 10px;
 }
@@ -271,7 +275,7 @@
 /* ========== RUBRIC CRITERIA ========== */
 .gd-criterion {
   padding: 16px 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
 .gd-criterion:last-child {
@@ -289,18 +293,18 @@
 .gd-criterion-name {
   font-size: 14px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #e6edf3;
 }
 
 .gd-criterion-score {
   font-size: 14px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #e6edf3;
 }
 
 .gd-criterion-desc {
   font-size: 13px;
-  color: #666;
+  color: rgba(255,255,255,0.4);
   margin: 0 0 10px;
   line-height: 1.5;
 }
@@ -313,7 +317,7 @@
 
 .gd-match-label {
   font-size: 12px;
-  color: #999;
+  color: rgba(255,255,255,0.3);
   flex-shrink: 0;
   width: 70px;
 }
@@ -321,7 +325,7 @@
 .gd-match-track {
   flex: 1;
   height: 6px;
-  background: #f0f0f0;
+  background: rgba(255,255,255,0.07);
   border-radius: 99px;
   overflow: hidden;
 }
@@ -335,11 +339,11 @@
 .gd-suggestion {
   margin-top: 10px;
   padding: 10px 12px;
-  background: #fefce8;
-  border: 1px solid #fde68a;
+  background: rgba(210,153,34,0.08);
+  border: 1px solid rgba(210,153,34,0.2);
   border-radius: 6px;
   font-size: 12px;
-  color: #78350f;
+  color: #d29922;
   line-height: 1.5;
 }
 
@@ -357,8 +361,9 @@
 }
 
 .gd-side-card {
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.07);
   border-radius: 8px;
   padding: 18px;
 }
@@ -367,7 +372,7 @@
 .gd-grade-header {
   font-size: 13px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #e6edf3;
   margin-bottom: 16px;
 }
 
@@ -397,33 +402,33 @@
 .gd-score-num {
   font-size: 28px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #e6edf3;
   line-height: 1;
 }
 
 .gd-score-denom {
   font-size: 13px;
-  color: #999;
+  color: rgba(255,255,255,0.35);
 }
 
 .gd-score-pending {
   font-size: 20px;
   font-weight: 600;
-  color: #bbb;
+  color: rgba(255,255,255,0.2);
 }
 
 .gd-grade-label {
   text-align: center;
   font-size: 16px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #e6edf3;
   margin-bottom: 2px;
 }
 
 .gd-grade-pct {
   text-align: center;
   font-size: 13px;
-  color: #999;
+  color: rgba(255,255,255,0.35);
 }
 
 /* ========== STUDENT INFO ========== */
@@ -432,7 +437,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 8px 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   font-size: 13px;
 }
 
@@ -441,25 +446,25 @@
 }
 
 .gd-info-label {
-  color: #999;
+  color: rgba(255,255,255,0.35);
 }
 
 .gd-info-value {
   font-weight: 600;
-  color: #1a1a1a;
+  color: #e6edf3;
 }
 
 /* ========== MANUAL OVERRIDE ========== */
 .gd-override-title {
   font-size: 14px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #e6edf3;
   margin: 0 0 8px;
 }
 
 .gd-override-desc {
   font-size: 13px;
-  color: #666;
+  color: rgba(255,255,255,0.4);
   line-height: 1.5;
   margin: 0 0 12px;
 }
@@ -467,10 +472,10 @@
 .gd-btn-override {
   width: 100%;
   padding: 9px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 6px;
-  background: white;
-  color: #333;
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.6);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -479,8 +484,8 @@
 }
 
 .gd-btn-override:hover {
-  background: #f9f9f9;
-  border-color: #bbb;
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.2);
 }
 
 .gd-override-row {
@@ -496,28 +501,30 @@
   flex-direction: column;
   gap: 3px;
   font-size: 12px;
-  color: #555;
+  color: rgba(255,255,255,0.4);
   min-width: 0;
 }
 
 .gd-override-input {
   width: 46px;
   padding: 5px 8px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 4px;
   font-size: 13px;
   text-align: center;
   font-family: inherit;
+  background: rgba(255,255,255,0.05);
+  color: #e6edf3;
 }
 
 .gd-override-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: rgba(255,255,255,0.25);
 }
 
 .gd-override-max {
   font-size: 12px;
-  color: #999;
+  color: rgba(255,255,255,0.3);
   flex-shrink: 0;
 }
 
@@ -530,9 +537,10 @@
 .gd-btn-ghost-sm {
   flex: 1;
   padding: 7px;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 4px;
-  background: white;
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.5);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -542,10 +550,10 @@
 .gd-btn-primary-sm {
   flex: 1;
   padding: 7px;
-  border: none;
+  border: 1px solid rgba(255,255,255,0.15);
   border-radius: 4px;
-  background: #1a1a1a;
-  color: white;
+  background: rgba(255,255,255,0.1);
+  color: #e6edf3;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -554,16 +562,16 @@
 
 /* ========== PENDING BADGE ========== */
 .gd-badge-pending {
-  background: #fef3c7;
-  color: #92400e;
+  background: rgba(210,153,34,0.15);
+  color: #d29922;
 }
 
 /* ========== REFERENCE ANSWER ========== */
 .gd-sample-answer-box {
   margin-top: 14px;
   padding: 12px 14px;
-  background: #f5f7fa;
-  border: 1px solid #e0e0e0;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.07);
   border-radius: 6px;
 }
 
@@ -572,13 +580,13 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #999;
+  color: rgba(255,255,255,0.3);
   margin-bottom: 6px;
 }
 
 .gd-sample-answer-text {
   font-size: 13px;
-  color: #555;
+  color: rgba(255,255,255,0.45);
   line-height: 1.6;
   margin: 0;
 }
@@ -588,8 +596,8 @@
   display: inline-block;
   margin-top: 12px;
   padding: 4px 10px;
-  background: #d1fae5;
-  color: #065f46;
+  background: rgba(63,185,80,0.15);
+  color: #3fb950;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
@@ -601,46 +609,45 @@
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  background: #1a1a1a;
-  color: white;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #e6edf3;
   padding: 12px 24px;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
   z-index: 200;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
   white-space: nowrap;
 }
 
 /* ========== AI GRADING ========== */
-
-/* "Run AI Grading" primary button */
 .gd-btn-ai {
   width: 100%;
   padding: 10px;
-  border: none;
+  border: 1px solid rgba(255,255,255,0.15);
   border-radius: 6px;
-  background: #667eea;
-  color: white;
+  background: rgba(255,255,255,0.08);
+  color: #e6edf3;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: all 0.15s;
   font-family: inherit;
   margin-bottom: 8px;
 }
 
-.gd-btn-ai:hover    { background: #5a6fd6; }
-.gd-btn-ai:disabled { opacity: 0.6; cursor: not-allowed; }
+.gd-btn-ai:hover    { background: rgba(255,255,255,0.14); }
+.gd-btn-ai:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* Re-run link-style button */
 .gd-btn-ai-rerun {
   width: 100%;
   margin-top: 8px;
   padding: 6px;
   border: none;
   background: none;
-  color: #667eea;
+  color: rgba(255,255,255,0.4);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -648,10 +655,9 @@
   text-align: center;
 }
 
-.gd-btn-ai-rerun:hover    { text-decoration: underline; }
-.gd-btn-ai-rerun:disabled { opacity: 0.5; cursor: not-allowed; }
+.gd-btn-ai-rerun:hover    { text-decoration: underline; color: rgba(255,255,255,0.6); }
+.gd-btn-ai-rerun:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* Mode choice buttons (Auto / Manual) */
 .gd-btn-mode {
   width: 100%;
   display: flex;
@@ -678,33 +684,31 @@
 }
 
 .gd-btn-mode-auto {
-  border: none;
-  background: #10b981;
-  color: white;
+  border: 1px solid rgba(63,185,80,0.3);
+  background: rgba(63,185,80,0.12);
+  color: #3fb950;
 }
 
-.gd-btn-mode-auto:hover { background: #059669; }
+.gd-btn-mode-auto:hover { background: rgba(63,185,80,0.2); }
 
 .gd-btn-mode-manual {
-  border: 1px solid #e0e0e0;
-  background: white;
-  color: #333;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.6);
 }
 
-.gd-btn-mode-manual:hover { background: #f9f9f9; border-color: #bbb; }
+.gd-btn-mode-manual:hover { background: rgba(255,255,255,0.08); }
 
-/* AI hint shown inside each override row label */
 .gd-ai-hint {
   font-size: 10px;
   font-weight: 600;
-  color: #667eea;
-  background: #eef2ff;
+  color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.07);
   padding: 1px 5px;
   border-radius: 3px;
   display: inline-block;
 }
 
-/* AI similarity badge shown in student answer card header */
 .gd-section-header-right {
   display: flex;
   align-items: center;
@@ -714,14 +718,13 @@
 .gd-ai-similarity-badge {
   font-size: 11px;
   font-weight: 600;
-  color: #5a6fd6;
-  background: #eef2ff;
-  border: 1px solid #c7d2fe;
+  color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
   padding: 2px 7px;
   border-radius: 4px;
 }
 
-/* AI loading state */
 .gd-ai-loading {
   display: flex;
   flex-direction: column;
@@ -733,8 +736,8 @@
 .gd-ai-spinner {
   width: 22px;
   height: 22px;
-  border: 3px solid #e0e0e0;
-  border-top-color: #667eea;
+  border: 3px solid rgba(255,255,255,0.07);
+  border-top-color: rgba(255,255,255,0.4);
   border-radius: 50%;
   animation: gd-spin 0.7s linear infinite;
 }

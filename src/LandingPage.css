@@ -141,6 +141,24 @@
   color: #000;
 }
 
+.type-cursor {
+  display: inline-block;
+  color: #4a5568;
+  font-weight: 200;
+  animation: cursorBlink 0.9s step-end infinite;
+  margin-left: 1px;
+}
+
+.type-cursor-done {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
 .hero-description {
   font-size: 16px;
   color: #666;

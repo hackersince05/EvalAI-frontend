@@ -3,13 +3,14 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #f5f7fa;
+  background: #0d1117;
 }
 
 /* ========== TOPBAR ========== */
 .assess-topbar {
-  background: white;
-  border-bottom: 1px solid #e0e0e0;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
   padding: 0 24px;
   height: 64px;
   display: flex;
@@ -23,38 +24,39 @@
 .assess-topbar-title {
   font-size: 18px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #e6edf3;
 }
 
 .assess-topbar-sub {
   font-size: 13px;
-  color: #999;
+  color: rgba(255,255,255,0.35);
   margin-top: 2px;
 }
 
 /* ========== BUTTONS ========== */
 .assess-btn-primary {
   padding: 9px 18px;
-  background: #1a1a1a;
-  color: #fff;
-  border: none;
+  background: rgba(255,255,255,0.1);
+  color: #e6edf3;
+  border: 1px solid rgba(255,255,255,0.15);
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
   font-family: inherit;
 }
 
 .assess-btn-primary:hover {
-  background: #333;
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.25);
 }
 
 .assess-btn-ghost {
   padding: 9px 16px;
-  background: white;
-  color: #333;
-  border: 1px solid #ddd;
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 6px;
   font-size: 13px;
   font-weight: 500;
@@ -64,8 +66,8 @@
 }
 
 .assess-btn-ghost:hover {
-  background: #f9f9f9;
-  border-color: #bbb;
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.2);
 }
 
 /* ========== FILTER ROW ========== */
@@ -83,7 +85,7 @@
   border: none;
   border-radius: 6px 6px 0 0;
   background: transparent;
-  color: #666;
+  color: rgba(255,255,255,0.35);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -93,36 +95,37 @@
 }
 
 .assess-filter-tab:hover {
-  color: #333;
-  background: #f0f0f0;
+  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.04);
 }
 
 .assess-filter-tab.active {
-  color: #1a1a1a;
+  color: #e6edf3;
   font-weight: 600;
-  border-bottom: 2px solid #1a1a1a;
-  background: white;
+  border-bottom: 2px solid #4a5568;
+  background: rgba(255,255,255,0.03);
 }
 
 .assess-filter-count {
   font-size: 11px;
-  background: #f0f0f0;
-  color: #666;
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.4);
   padding: 1px 6px;
   border-radius: 99px;
   font-weight: 600;
 }
 
 .assess-filter-tab.active .assess-filter-count {
-  background: #1a1a1a;
-  color: #fff;
+  background: #4a5568;
+  color: #e6edf3;
 }
 
 /* ========== TABLE CARD ========== */
 .assess-table-card {
   margin: 0 24px 24px;
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.07);
   border-top: none;
   border-radius: 0 6px 8px 8px;
   overflow: hidden;
@@ -141,13 +144,13 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #999;
-  background: #fafafa;
-  border-bottom: 1px solid #e0e0e0;
+  color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 
 .assess-table tbody tr {
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   transition: background 0.15s;
 }
 
@@ -156,7 +159,7 @@
 }
 
 .assess-table tbody tr:hover {
-  background: #fafafa;
+  background: rgba(255,255,255,0.03);
 }
 
 .assess-table tbody td {
@@ -167,22 +170,22 @@
 .assess-row-title {
   font-size: 14px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #e6edf3;
 }
 
 .assess-row-id {
   font-size: 12px;
-  color: #999;
+  color: rgba(255,255,255,0.3);
   margin-top: 2px;
 }
 
 .assess-row-topic {
-  color: #555;
+  color: rgba(255,255,255,0.5);
   font-size: 13px;
 }
 
 .assess-row-num {
-  color: #333;
+  color: rgba(255,255,255,0.7);
   font-size: 13px;
   font-weight: 500;
 }
@@ -197,18 +200,18 @@
 }
 
 .assess-badge-active {
-  background: #d1fae5;
-  color: #065f46;
+  background: rgba(63,185,80,0.15);
+  color: #3fb950;
 }
 
 .assess-badge-draft {
-  background: #fef3c7;
-  color: #92400e;
+  background: rgba(210,153,34,0.15);
+  color: #d29922;
 }
 
 .assess-badge-closed {
-  background: #f0f0f0;
-  color: #555;
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.4);
 }
 
 /* ========== ROW ACTIONS ========== */
@@ -223,73 +226,69 @@
   padding: 5px 12px;
   font-size: 12px;
   font-weight: 500;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 4px;
-  background: white;
-  color: #333;
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.6);
   cursor: pointer;
   transition: all 0.15s;
   font-family: inherit;
 }
 
 .assess-action-btn:hover {
-  background: #f9f9f9;
-  border-color: #bbb;
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.2);
 }
 
 .assess-action-grade {
-  background: #1a1a1a;
-  color: white;
-  border-color: #1a1a1a;
+  background: rgba(255,255,255,0.1);
+  color: #e6edf3;
+  border-color: rgba(255,255,255,0.15);
 }
 
 .assess-action-grade:hover {
-  background: #333;
-  border-color: #333;
+  background: rgba(255,255,255,0.18);
 }
 
 .assess-action-close {
-  background: white;
-  color: #92400e;
-  border-color: #fde68a;
+  background: rgba(210,153,34,0.08);
+  color: #d29922;
+  border-color: rgba(210,153,34,0.25);
 }
 
 .assess-action-close:hover:not(:disabled) {
-  background: #fffbeb;
-  border-color: #f59e0b;
+  background: rgba(210,153,34,0.15);
 }
 
 .assess-action-reopen {
-  background: white;
-  color: #065f46;
-  border-color: #6ee7b7;
+  background: rgba(63,185,80,0.08);
+  color: #3fb950;
+  border-color: rgba(63,185,80,0.25);
 }
 
 .assess-action-reopen:hover:not(:disabled) {
-  background: #ecfdf5;
-  border-color: #10b981;
+  background: rgba(63,185,80,0.15);
 }
 
 .assess-action-danger {
-  background: white;
-  color: #991b1b;
-  border-color: #fca5a5;
+  background: rgba(248,81,73,0.08);
+  color: #f85149;
+  border-color: rgba(248,81,73,0.25);
 }
 
 .assess-action-danger:hover:not(:disabled) {
-  background: #fef2f2;
-  border-color: #ef4444;
+  background: rgba(248,81,73,0.15);
 }
 
 .assess-action-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: default;
 }
 
 .assess-confirm-text {
   font-size: 12px;
   font-weight: 600;
-  color: #991b1b;
+  color: #f85149;
   display: flex;
   align-items: center;
 }
@@ -297,7 +296,7 @@
 .assess-empty {
   text-align: center;
   padding: 40px;
-  color: #999;
+  color: rgba(255,255,255,0.3);
   font-size: 14px;
 }
 
@@ -307,14 +306,16 @@
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  background: #1a1a1a;
-  color: white;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #e6edf3;
   padding: 12px 24px;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
   z-index: 200;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
   animation: toastIn 0.2s ease;
 }
 
@@ -327,7 +328,7 @@
 .assess-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.3);
+  background: rgba(0,0,0,0.5);
   z-index: 40;
   animation: fadeIn 0.2s ease;
 }
@@ -343,9 +344,10 @@
   right: 0;
   bottom: 0;
   width: 440px;
-  background: white;
-  border-left: 1px solid #e0e0e0;
-  box-shadow: -4px 0 24px rgba(0,0,0,0.08);
+  background: rgba(13,17,23,0.95);
+  backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(255,255,255,0.07);
+  box-shadow: -4px 0 40px rgba(0,0,0,0.4);
   display: flex;
   flex-direction: column;
   z-index: 50;
@@ -362,21 +364,21 @@
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
   flex-shrink: 0;
 }
 
 .assess-panel-title {
   font-size: 16px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #e6edf3;
 }
 
 .assess-panel-close {
   width: 32px;
   height: 32px;
-  border: none;
-  background: #f0f0f0;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.06);
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
@@ -384,10 +386,11 @@
   place-items: center;
   transition: background 0.2s;
   font-family: inherit;
+  color: rgba(255,255,255,0.6);
 }
 
 .assess-panel-close:hover {
-  background: #e0e0e0;
+  background: rgba(255,255,255,0.12);
 }
 
 .assess-panel-form {
@@ -417,17 +420,17 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #555;
+  color: rgba(255,255,255,0.4);
 }
 
 .assess-input,
 .assess-select {
   padding: 10px 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 6px;
   font-size: 14px;
-  color: #333;
-  background: white;
+  color: #e6edf3;
+  background: rgba(255,255,255,0.05);
   transition: border-color 0.15s, box-shadow 0.15s;
   font-family: inherit;
   width: 100%;
@@ -437,17 +440,17 @@
 .assess-input:focus,
 .assess-select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102,126,234,0.12);
+  border-color: rgba(255,255,255,0.25);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.05);
 }
 
 .assess-textarea {
   padding: 10px 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 6px;
   font-size: 14px;
-  color: #333;
-  background: white;
+  color: #e6edf3;
+  background: rgba(255,255,255,0.05);
   resize: vertical;
   transition: border-color 0.15s, box-shadow 0.15s;
   font-family: inherit;
@@ -457,8 +460,8 @@
 
 .assess-textarea:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102,126,234,0.12);
+  border-color: rgba(255,255,255,0.25);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.05);
 }
 
 .assess-textarea-lg {
@@ -467,7 +470,7 @@
 
 .assess-sample-hint {
   font-size: 12px;
-  color: #999;
+  color: rgba(255,255,255,0.3);
   line-height: 1.5;
 }
 
@@ -476,8 +479,8 @@
   display: flex;
   gap: 10px;
   padding: 16px 24px;
-  border-top: 1px solid #e0e0e0;
-  background: white;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.02);
   flex-shrink: 0;
   justify-content: flex-end;
 }
@@ -494,8 +497,8 @@
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 1px;
-  color: #065f46;
-  background: #d1fae5;
+  color: #3fb950;
+  background: rgba(63,185,80,0.12);
   padding: 2px 8px;
   border-radius: 4px;
   font-family: monospace;
@@ -504,18 +507,19 @@
 .assess-code-copy {
   font-size: 11px;
   font-weight: 500;
-  color: #667eea;
+  color: rgba(255,255,255,0.4);
   background: none;
   border: none;
   cursor: pointer;
   padding: 2px 6px;
   border-radius: 4px;
-  transition: background 0.15s;
+  transition: background 0.15s, color 0.15s;
   font-family: inherit;
 }
 
 .assess-code-copy:hover {
-  background: #f0f0f0;
+  background: rgba(255,255,255,0.07);
+  color: #e6edf3;
 }
 
 /* ========== QUESTION CARDS ========== */
@@ -533,14 +537,14 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #555;
+  color: rgba(255,255,255,0.4);
 }
 
 .assess-q-total {
   font-size: 12px;
   font-weight: 600;
-  color: #1a1a1a;
-  background: #f0f0f0;
+  color: #e6edf3;
+  background: rgba(255,255,255,0.08);
   padding: 3px 10px;
   border-radius: 20px;
   text-transform: none;
@@ -548,13 +552,13 @@
 }
 
 .assess-q-card {
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(255,255,255,0.07);
   border-radius: 8px;
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  background: #fafafa;
+  background: rgba(255,255,255,0.02);
 }
 
 .assess-q-card-header {
@@ -566,36 +570,37 @@
 .assess-q-card-num {
   font-size: 13px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #e6edf3;
 }
 
 .assess-q-remove-btn {
   width: 26px;
   height: 26px;
-  border: none;
-  background: #f0f0f0;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
   border-radius: 4px;
   font-size: 11px;
   cursor: pointer;
   display: grid;
   place-items: center;
-  color: #666;
+  color: rgba(255,255,255,0.4);
   transition: background 0.15s, color 0.15s;
   font-family: inherit;
 }
 
 .assess-q-remove-btn:hover {
-  background: #fee2e2;
-  color: #c33;
+  background: rgba(248,81,73,0.15);
+  color: #f85149;
+  border-color: rgba(248,81,73,0.3);
 }
 
 .assess-add-q-btn {
   width: 100%;
   padding: 10px;
-  border: 1px dashed #ccc;
+  border: 1px dashed rgba(255,255,255,0.15);
   border-radius: 6px;
-  background: white;
-  color: #667eea;
+  background: transparent;
+  color: rgba(255,255,255,0.4);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -604,8 +609,9 @@
 }
 
 .assess-add-q-btn:hover {
-  border-color: #667eea;
-  background: #f5f4ff;
+  border-color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.04);
+  color: #e6edf3;
 }
 
 /* ========== RESPONSIVE ========== */
